@@ -64,11 +64,12 @@ def get_data(conn):
     c = conn.cursor()
 
     answers = c.execute("SELECT * FROM MSR_ANSWERS")
-    comments = c.execute("SELECT * FROM MSR_COMMENTS")
-    edits = c.execute("SELECT * FROM MSR_EDITS")
-
     df_answers = pd.DataFrame(answers, columns=["AnswerId", "QuestionId"])
+
+    comments = c.execute("SELECT * FROM MSR_COMMENTS")
     df_comments = pd.DataFrame(comments, columns=["Id", "PostId", "Text", "CreationDate"])
+
+    edits = c.execute("SELECT * FROM MSR_EDITS")
     df_edits = pd.DataFrame(edits, columns=["Id", "PostId", "RootHistoryId", "RootPostBlockVersionId", "PredEqual", "PredSimilarity", "Length", "RootLocalId", "UpdatedAt", "Content"])
 
     c.close()
