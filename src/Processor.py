@@ -3,7 +3,7 @@ import pickle
 
 
 def get_tags():
-    with open("tags.cnf") as f:
+    with open("tags.cfg") as f:
         tags = f.read().splitlines()
 
     return tags

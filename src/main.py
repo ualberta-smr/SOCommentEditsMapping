@@ -3,7 +3,7 @@ import sqlite3
 import time
 import pandas as pd
 
-from Processor import Processor
+from src.Processor import Processor
 
 
 def setup_sqlite(conn):
@@ -52,7 +52,7 @@ def setup_sqlite(conn):
                 SELECT ANSWER_ID
                 FROM MSR_ANSWERS
             )
-            AND (b.PredEqual IS NULL OR PredEqual = 0)
+            AND (b.PredEqual IS NULL OR b.PredEqual = 0)
             ORDER BY POST_HISTORY_ID ASC 
     ''')
 
@@ -70,7 +70,7 @@ def get_data(conn):
     df_comments = pd.DataFrame(comments, columns=["Id", "PostId", "Text", "CreationDate"])
 
     edits = c.execute("SELECT * FROM MSR_EDITS")
-    df_edits = pd.DataFrame(edits, columns=["Id", "PostId", "RootHistoryId", "RootPostBlockVersionId", "PredEqual", "PredSimilarity", "Length", "RootLocalId", "UpdatedAt", "Content"])
+    df_edits = pd.DataFrame(edits, columns=["Id", "PostId", "PostHistoryId", "UpdatedAt", "Content"])
 
     c.close()
 
@@ -78,8 +78,9 @@ def get_data(conn):
 
 
 def full():
-    conn = sqlite3.connect("sotorrent.sqlite3")
-    setup_sqlite(conn)
+    # conn = sqlite3.connect("sotorrent.sqlite3")
+    conn = sqlite3.connect("test.sqlite3")
+    # setup_sqlite(conn)
     df_answers, df_comments, df_edits = get_data(conn)
 
     conn.close()
