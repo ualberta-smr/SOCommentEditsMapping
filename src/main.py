@@ -3,7 +3,7 @@ import sqlite3
 import time
 import pandas as pd
 
-from src.Processor import Processor
+from Processor import Processor
 
 
 def setup_sqlite(conn):
@@ -61,25 +61,26 @@ def setup_sqlite(conn):
 
 
 def get_data(conn):
-    c = conn.cursor()
 
-    answers = c.execute("SELECT * FROM MSR_ANSWERS")
-    df_answers = pd.DataFrame(answers, columns=["AnswerId", "QuestionId"])
+    df_answers = pd.read_sql_query("SELECT * FROM MSR_ANSWERS;", conn)
 
-    comments = c.execute("SELECT * FROM MSR_COMMENTS")
-    df_comments = pd.DataFrame(comments, columns=["Id", "PostId", "Text", "CreationDate"])
+    print("Retrieved answers", df_answers.size)
 
-    edits = c.execute("SELECT * FROM MSR_EDITS")
-    df_edits = pd.DataFrame(edits, columns=["Id", "PostId", "PostHistoryId", "UpdatedAt", "Content"])
+    df_comments = pd.read_sql_query("SELECT * FROM MSR_COMMENTS;", conn)
 
-    c.close()
+    print("Retrieved comments", df_comments.size)
+
+    df_edits = pd.read_sql_query("SELECT * FROM MSR_EDITS;", conn)
+
+    print("Retrieved edits", df_edits.size)
 
     return df_answers, df_comments, df_edits
 
 
 def full():
     # conn = sqlite3.connect("sotorrent.sqlite3")
-    conn = sqlite3.connect("test.sqlite3")
+    conn = sqlite3.connect("src/test.sqlite3")
+    print("connection made")
     # setup_sqlite(conn)
     df_answers, df_comments, df_edits = get_data(conn)
 

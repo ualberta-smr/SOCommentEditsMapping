@@ -20,7 +20,7 @@ class Processor:
 
     def process(self):
         pool = mp.Pool(mp.cpu_count() - 1)
-        answer_ids = list(self.answers["AnswerId"])
+        answer_ids = list(self.answers["ANSWER_ID"])
         buckets = pool.map(self.process_answers, answer_ids)
         pool.close()
         pool.join()
@@ -29,13 +29,17 @@ class Processor:
             pickle.dump(self.dataset, file)
 
     def process_answers(self, answer_id):
-        comments = self.comments.loc[self.comments['PostId'] == answer_id]
-        edits = self.edits.loc[self.edits['PostId'] == answer_id]
+        comments = self.comments.loc[self.comments['POST_ID'] == answer_id]
+
+        print("Comments", comments)
+
+        edits = self.edits.loc[self.edits['POST_ID'] == answer_id]
+        print("Edits", edits)
 
         if len(edits) == 0:
             return None
 
-        bucket = self.process_edits(answer_id, edits, comments)
+        bucket = self.process_comments(answer_id, edits, comments)
         return bucket
 
     def post_process(self):
@@ -46,7 +50,10 @@ class Processor:
         for tag in tags:
             print(tag)
 
-    def process_edits(self, answer_id, edits, comments):
+    def process_comments(self, answer_id, edits, comments):
+
+
+
         bucket = {
             "answer_id": str(answer_id),
             "edits": []
