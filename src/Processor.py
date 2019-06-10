@@ -21,21 +21,26 @@ class Processor:
     def process(self):
         #pool = mp.Pool(mp.cpu_count() - 1)
         answer_ids = list(self.answers["ANSWER_ID"])
-        # print("total number of answers", len(answer_ids))
+        print("total number of answers", len(answer_ids))
         # print("total number of comments", len(list(self.comments["POST_ID"])))
         # print("total number of edits", len(list(self.edits["POST_ID"])))
 
         for answer_id in answer_ids:
-            comments = sorted(set(self.comments.loc[self.comments["POST_ID"] == answer_id]))
-            print(comments)
-            edits = sorted(set(self.edits.loc[self.edits["POST_ID"] == answer_id]))
-            print(edits)
-            for comment in comments:
-                print(comment)
-                for edit in edits:
-                    print(edit)
-                    break
-                break
+            print("Answer id ", answer_id)
+            comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
+            edits = self.edits.loc[self.edits["POST_ID"] == answer_id]
+            for comment in comments.itertuples():
+                comment_text = getattr(comment, "TEXT")
+                comment_date = getattr(comment, "CREATION_DATE")
+                print(comment_text, comment_date)
+
+                if comment_text
+                
+                for edit in edits.itertuples():
+                    edit_text = getattr(edit, "CONTENT")
+                    edit_date = getattr(edit, "UPDATE_DATE")
+                    print(edit_text, edit_date)
+
             break
 
 
