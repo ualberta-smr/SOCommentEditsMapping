@@ -23,15 +23,25 @@ def setup_sqlite(conn):
             LIMIT 100;
         
         -- Join Questions with their answers
-        CREATE TABLE MSR_ANSWERS AS 
+        CREATE TABLE MSR_ANSWERS(
+            ANSWER_ID INTEGER PRIMARY KEY NOT NULL,
+            QUESTION_ID INTEGER NOT NULL 
+        );
+        INSERT INTO MSR_ANSWERS(ANSWER_ID, QUESTION_ID)
             SELECT a.Id AS ANSWER_ID, 
                 q.Id AS QUESTION_ID
             FROM Posts a 
             JOIN MSR_QUESTIONS q ON q.Id = a.ParentId;
         
         -- Get all comments on an answer
-        CREATE TABLE MSR_COMMENTS AS
-            SELECT c.Id AS ID,
+        CREATE TABLE MSR_COMMENTS(
+            COMMENT_ID INTEGER PRIMARY KEY NOT NULL,
+            POST_ID INTEGER NOT NULL,
+            TEXT TEXT,
+            CREATION_DATE TEXT
+        );
+        INSERT INTO MSR_COMMENTS(COMMENT_ID, POST_ID, TEXT, CREATION_DATE) 
+            SELECT c.Id AS COMMENT_ID,
                 c.PostId AS POST_ID,
                 c.Text AS TEXT,
                 c.CreationDate AS CREATION_DATE
@@ -39,8 +49,15 @@ def setup_sqlite(conn):
             LEFT JOIN MSR_ANSWERS a ON c.PostId = a.ANSWER_ID;
         
         -- Get all edits on an answer  
-        CREATE TABLE MSR_EDITS AS 
-            SELECT b.Id AS ID,
+        CREATE TABLE MSR_EDITS(
+            EDIT_ID INTEGER PRIMARY KEY NOT NULL,
+            POST_ID INTEGER NOT NULL,
+            POST_HISTORY_ID INTEGER,
+            UPDATE_DATE TEXT,
+            CONTENT TEXT
+        );
+        INSERT INTO MSR_EDITS(EDIT_ID, POST_ID, POST_HISTORY_ID, UPDATE_DATE, CONTENT) 
+            SELECT b.Id AS EDIT_ID,
                 b.PostId AS POST_ID,
                 b.PostHistoryId AS POST_HISTORY_ID,
                 h.CreationDate AS UPDATE_DATE,
@@ -63,8 +80,8 @@ def setup_sqlite(conn):
 def get_data(conn):
 
     df_answers = pd.read_sql_query("SELECT * FROM MSR_ANSWERS;", conn)
-    df_comments = pd.read_sql_query("SELECT * FROM MSR_COMMENTS;", conn)
-    df_edits = pd.read_sql_query("SELECT * FROM MSR_EDITS;", conn)
+    df_comments = pd.read_sql_query("SELECT * FROM MSR_COMMENTS;", conn, parse_dates={"CREATION_DATE": "%Y-%m-%d %H:%M:%S"})
+    df_edits = pd.read_sql_query("SELECT * FROM MSR_EDITS;", conn, parse_dates={"UDPATE_DATE": "%Y-%m-%d %H:%M:%S"})
     
     return df_answers, df_comments, df_edits
 
