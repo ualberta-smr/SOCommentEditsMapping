@@ -19,20 +19,24 @@ class Processor:
         self.dataset = []
 
     def process(self):
-        pool = mp.Pool(mp.cpu_count() - 1)
+        #pool = mp.Pool(mp.cpu_count() - 1)
         answer_ids = list(self.answers["ANSWER_ID"])
-        print("total number of answers", len(answer_ids))
-        comment_ids = list(self.comments["POST_ID"])
-        print("total number of comments", len(comment_ids))
-        print("total number of edits", len(list(self.edits["POST_ID"])))
+        # print("total number of answers", len(answer_ids))
+        # print("total number of comments", len(list(self.comments["POST_ID"])))
+        # print("total number of edits", len(list(self.edits["POST_ID"])))
 
         for answer_id in answer_ids:
-            comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
-            comments = sorted(set(comments))
-            edits = self.edits.loc[self.edits["POST_ID"] == answer_id
-            for comment_id in comment_ids:
+            comments = sorted(set(self.comments.loc[self.comments["POST_ID"] == answer_id]))
+            print(comments)
+            edits = sorted(set(self.edits.loc[self.edits["POST_ID"] == answer_id]))
+            print(edits)
+            for comment in comments:
+                print(comment)
                 for edit in edits:
-                
+                    print(edit)
+                    break
+                break
+            break
 
 
         # buckets = pool.map(self.process_answers, answer_ids)
@@ -57,6 +61,14 @@ class Processor:
         bucket = self.process_comments(answer_id, edits, comments)
         return bucket
 
+    def process_comments(self, answer_id, edits, comments):
+
+        bucket = {
+            "answer_id": str(answer_id),
+            "edits": []
+        }
+        return bucket
+
     def post_process(self):
         return
 
@@ -64,13 +76,3 @@ class Processor:
         tags = get_tags()
         for tag in tags:
             print(tag)
-
-    def process_comments(self, answer_id, edits, comments):
-
-
-
-        bucket = {
-            "answer_id": str(answer_id),
-            "edits": []
-        }
-        return bucket

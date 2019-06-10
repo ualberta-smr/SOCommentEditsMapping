@@ -74,9 +74,11 @@ def full():
     conn = sqlite3.connect("src/test.sqlite3")
     print("connection made")
     # setup_sqlite(conn)
+    start = time.time()
     df_answers, df_comments, df_edits = get_data(conn)
-
     conn.close()
+    end = time.time()
+    print("Data loading took {0:2f} seconds".format(end - start))
 
     pipeline = Processor(df_answers, df_comments, df_edits)
 
