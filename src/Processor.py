@@ -3,7 +3,7 @@ import pickle
 
 
 def get_tags():
-    with open("tags.cfg") as f:
+    with open("src/tags.cfg") as f:
         tags = f.read().splitlines()
 
     return tags
@@ -21,14 +21,29 @@ class Processor:
     def process(self):
         pool = mp.Pool(mp.cpu_count() - 1)
         answer_ids = list(self.answers["ANSWER_ID"])
-        buckets = pool.map(self.process_answers, answer_ids)
-        pool.close()
-        pool.join()
-        self.dataset = [b for b in buckets if b is not None]
-        with open('dataset.pickle', 'wb') as file:
-            pickle.dump(self.dataset, file)
+        print("total number of answers", len(answer_ids))
+        comment_ids = list(self.comments["POST_ID"])
+        print("total number of comments", len(comment_ids))
+        print("total number of edits", len(list(self.edits["POST_ID"])))
+
+        for answer_id in answer_ids:
+            comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
+            comments = sorted(set(comments))
+            edits = self.edits.loc[self.edits["POST_ID"] == answer_id
+            for comment_id in comment_ids:
+                for edit in edits:
+                
+
+
+        # buckets = pool.map(self.process_answers, answer_ids)
+        # pool.close()
+        # pool.join()
+        # self.dataset = [b for b in buckets if b is not None]
+        # with open('dataset.pickle', 'wb') as file:
+        #     pickle.dump(self.dataset, file)
 
     def process_answers(self, answer_id):
+        print("answer id:", answer_id)
         comments = self.comments.loc[self.comments['POST_ID'] == answer_id]
 
         print("Comments", comments)

@@ -63,17 +63,9 @@ def setup_sqlite(conn):
 def get_data(conn):
 
     df_answers = pd.read_sql_query("SELECT * FROM MSR_ANSWERS;", conn)
-
-    print("Retrieved answers", df_answers.size)
-
     df_comments = pd.read_sql_query("SELECT * FROM MSR_COMMENTS;", conn)
-
-    print("Retrieved comments", df_comments.size)
-
     df_edits = pd.read_sql_query("SELECT * FROM MSR_EDITS;", conn)
-
-    print("Retrieved edits", df_edits.size)
-
+    
     return df_answers, df_comments, df_edits
 
 
