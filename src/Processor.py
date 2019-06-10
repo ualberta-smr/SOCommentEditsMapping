@@ -1,6 +1,8 @@
 import multiprocessing as mp
 import pickle
 
+from RegexPatterns import find_groups
+
 
 def get_tags():
     with open("src/tags.cfg") as f:
@@ -29,17 +31,27 @@ class Processor:
             print("Answer id ", answer_id)
             comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
             edits = self.edits.loc[self.edits["POST_ID"] == answer_id]
+            has_code, has_edits, has_relevant_code = False
             for comment in comments.itertuples():
                 comment_text = getattr(comment, "TEXT")
                 comment_date = getattr(comment, "CREATION_DATE")
                 print(comment_text, comment_date)
 
-                if comment_text
+                comment_groups = find_groups(comment_text)
+                if len(comment_groups) > 0:
+                    has_code = True
                 
                 for edit in edits.itertuples():
+                    has_edits = True
                     edit_text = getattr(edit, "CONTENT")
                     edit_date = getattr(edit, "UPDATE_DATE")
                     print(edit_text, edit_date)
+
+                    edit_groups = find_groups(edit_text)
+                    matches = comment_groups & edit_groups
+                    if len(matches) > 1:
+                        has_relevant_code = True
+            print(has_code, has_edits, has_relevant_code)
 
             break
 
