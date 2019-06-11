@@ -1,7 +1,9 @@
 import multiprocessing as mp
 import pickle
 
+from collections import defaultdict, OrderedDict
 from RegexPatterns import find_groups
+from RegexPatterns import find_mentions
 
 
 def get_tags():
@@ -21,43 +23,72 @@ class Processor:
         self.dataset = []
 
     def process(self):
-        #pool = mp.Pool(mp.cpu_count() - 1)
+        # pool = mp.Pool(mp.cpu_count() - 1)
         answer_ids = list(self.answers["ANSWER_ID"])
-        print("total number of answers", len(answer_ids))
+
+        # print("total number of answers", len(answer_ids))
         # print("total number of comments", len(list(self.comments["POST_ID"])))
         # print("total number of edits", len(list(self.edits["POST_ID"])))
 
         for answer_id in answer_ids:
-            print("Answer id ", answer_id)
+            # print("Answer id ", answer_id)
+
+            # TODO: Get the author of the answer
+            # answer_author = getattr(answer, "UserName")
+
             comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
             edits = self.edits.loc[self.edits["POST_ID"] == answer_id]
-            has_code = False
-            has_edits = False
-            has_relevant_code = False
-            comment_authors = dict()
+
+            # TODO: Stats should be: CommentId, has_code, has_updates, has_relevant_code, comment_groups, edit_authors
+            stats = dict()
+
+            # TODO: Keep track of comment and edit authors
+            # We want to preserve the ordering on the comments we see
+            # comment_authors = OrderedDict()
+            # We do not need to preserve the ordering on the edits we see
+            # edit_authors = defaultdict(int)
+
             for comment in comments.itertuples():
+                has_code = False
+                has_edits = False
+                has_relevant_code = False
+
+                # TODO: Keep track of comment authors and their position
+                # comment_authors[getattr(comment, "UserName")] += 1
+
                 comment_text = getattr(comment, "TEXT")
                 comment_date = getattr(comment, "CREATION_DATE")
-                print(comment_text, comment_date)
 
                 comment_groups = find_groups(comment_text)
                 if len(comment_groups) > 0:
                     has_code = True
-                
+
                 for edit in edits.itertuples():
-                    has_edits = True
                     edit_text = getattr(edit, "CONTENT")
                     edit_date = getattr(edit, "UPDATE_DATE")
-                    print(edit_text, edit_date)
+                    # Only look at the edit if it occurred after the comment
+                    if comment_date < edit_date:
+                        has_edits = True
 
-                    edit_groups = find_groups(edit_text)
-                    matches = comment_groups & edit_groups
-                    if len(matches) > 1:
-                        has_relevant_code = True
-            print(has_code, has_edits, has_relevant_code)
+                        # TODO: Keep a counter of which authors make an edit
+                        # edit_authors[getattr(edit, "UserName")] += 1
+
+                        # Determine if the edit has the same groups as the comment
+                        edit_groups = find_groups(edit_text)
+                        matches = comment_groups & edit_groups
+                        if len(matches) > 1:
+                            has_relevant_code = True
+
+                # TODO: Check all previous commenters to see if they have a match with the found mention
+                # user_mention = find_mentions(comment_text)
+                # if user_mention is not None:
+                #     user = user_mention.expand("\1")
+                #     if len(user) > 0:
+                #         if user == comment_author:
+                #             increment counter
+                print(has_code, has_edits, has_relevant_code)
 
             break
-
 
         # buckets = pool.map(self.process_answers, answer_ids)
         # pool.close()

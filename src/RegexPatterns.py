@@ -56,3 +56,9 @@ def find_groups(text):
                 else:
                     matched_groups.add(match)
     return matched_groups
+
+
+# Find the names of Users mentioned in comments with '@' ie. @User You are wrong the answer is correct
+def find_mentions(text):
+    pattern = re.compile('((?:@[A-Za-z0-9]+))')
+    return pattern.search(text)
