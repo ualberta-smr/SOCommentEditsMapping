@@ -31,7 +31,10 @@ class Processor:
             print("Answer id ", answer_id)
             comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
             edits = self.edits.loc[self.edits["POST_ID"] == answer_id]
-            has_code, has_edits, has_relevant_code = False
+            has_code = False
+            has_edits = False
+            has_relevant_code = False
+            comment_authors = dict()
             for comment in comments.itertuples():
                 comment_text = getattr(comment, "TEXT")
                 comment_date = getattr(comment, "CREATION_DATE")
