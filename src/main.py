@@ -9,68 +9,54 @@ from Processor import Processor
 def setup_sqlite(conn):
     c = conn.cursor()
     c.executescript('''
-        DROP TABLE IF EXISTS MSR_QUESTIONS;
-        DROP TABLE IF EXISTS MSR_ANSWERS;
-        DROP TABLE IF EXISTS MSR_COMMENTS;
-        DROP TABLE IF EXISTS MSR_EDITS;
+        CREATE TABLE EditHistory AS
+        SELECT *
+        FROM (
+            SELECT
+              pv.PostId AS PostId,
+              pv.PostTypeId AS PostTypeId,
+              PostHistoryId AS EventId,
+              CASE
+                WHEN pv.PostHistoryTypeId=2 THEN "InitialBody"
+                ELSE "BodyEdit"
+              END AS Event,
+              u.DisplayName AS UserName,
+              pv.CreationDate AS CreationDate,
+              ph.Text AS Text
+            FROM PostVersion pv
+            JOIN PostHistory ph ON pv.PostHistoryId = ph.Id
+            JOIN Users u ON ph.UserId = u.Id
+            UNION ALL
+            SELECT
+              tv.PostId AS PostId,
+              tv.PostTypeId AS PostTypeId,
+              PostHistoryId AS EventId,
+              CASE
+                WHEN tv.PostHistoryTypeId=1 THEN "InitialTitle"
+                ELSE "TitleEdit"
+              END AS Event,
+              u.DisplayName AS UserName,
+              tv.CreationDate AS CreationDate,
+              ph.Text AS Text
+            FROM TitleVersion tv
+            JOIN PostHistory ph ON tv.PostHistoryId = ph.Id
+            JOIN Users u ON ph.UserId = u.Id
+            UNION ALL
+            SELECT
+              PostId,
+              PostTypeId,
+              c.Id AS EventId,
+              "Comment" AS Event,
+              u.DisplayName AS UserName,
+              c.CreationDate AS CreationDate,
+              c.Text AS Text
+            FROM Comments c
+            JOIN Posts p ON c.PostId = p.Id
+            JOIN Users u ON c.UserId = u.Id
+        ) AS EditHistory;
         
-        -- Retrieve all the Questions from the Posts table
-        CREATE TABLE MSR_QUESTIONS AS
-            SELECT p.Id
-            FROM Posts p
-            LEFT JOIN PostType pt ON p.PostTypeId = pt.Id AND pt.Type = "Question"
-            WHERE p.Score > 5
-            LIMIT 100;
-        
-        -- Join Questions with their answers
-        CREATE TABLE MSR_ANSWERS(
-            ANSWER_ID INTEGER PRIMARY KEY NOT NULL,
-            QUESTION_ID INTEGER NOT NULL 
-        );
-        INSERT INTO MSR_ANSWERS(ANSWER_ID, QUESTION_ID)
-            SELECT a.Id AS ANSWER_ID, 
-                q.Id AS QUESTION_ID
-            FROM Posts a 
-            JOIN MSR_QUESTIONS q ON q.Id = a.ParentId;
-        
-        -- Get all comments on an answer
-        CREATE TABLE MSR_COMMENTS(
-            COMMENT_ID INTEGER PRIMARY KEY NOT NULL,
-            POST_ID INTEGER NOT NULL,
-            TEXT TEXT,
-            CREATION_DATE TEXT
-        );
-        INSERT INTO MSR_COMMENTS(COMMENT_ID, POST_ID, TEXT, CREATION_DATE) 
-            SELECT c.Id AS COMMENT_ID,
-                c.PostId AS POST_ID,
-                c.Text AS TEXT,
-                c.CreationDate AS CREATION_DATE
-            FROM Comments c 
-            LEFT JOIN MSR_ANSWERS a ON c.PostId = a.ANSWER_ID;
-        
-        -- Get all edits on an answer  
-        CREATE TABLE MSR_EDITS(
-            EDIT_ID INTEGER PRIMARY KEY NOT NULL,
-            POST_ID INTEGER NOT NULL,
-            POST_HISTORY_ID INTEGER,
-            UPDATE_DATE TEXT,
-            CONTENT TEXT
-        );
-        INSERT INTO MSR_EDITS(EDIT_ID, POST_ID, POST_HISTORY_ID, UPDATE_DATE, CONTENT) 
-            SELECT b.Id AS EDIT_ID,
-                b.PostId AS POST_ID,
-                b.PostHistoryId AS POST_HISTORY_ID,
-                h.CreationDate AS UPDATE_DATE,
-                b.Content AS CONTENT
-            FROM PostBlockVersion b
-            JOIN PostHistory h ON b.PostHistoryId = h.Id
-            LEFT JOIN PostBlockType pbt ON pbt.Id = b.PostBlockTypeId AND pbt.Type = "CodeBlock"
-            WHERE b.PostId IN (
-                SELECT ANSWER_ID
-                FROM MSR_ANSWERS
-            )
-            AND (b.PredEqual IS NULL OR b.PredEqual = 0)
-            ORDER BY POST_HISTORY_ID ASC 
+        CREATE INDEX EditHistoryPostIdIndex ON EditHistory(PostId);
+        CREATE INDEX EditHistoryEventIdIndex ON EditHistory(EventId);
     ''')
 
     conn.commit()
@@ -79,9 +65,9 @@ def setup_sqlite(conn):
 
 def get_data(conn):
 
-    df_answers = pd.read_sql_query("SELECT * FROM MSR_ANSWERS;", conn)
-    df_comments = pd.read_sql_query("SELECT * FROM MSR_COMMENTS;", conn, parse_dates={"CREATION_DATE": "%Y-%m-%d %H:%M:%S"})
-    df_edits = pd.read_sql_query("SELECT * FROM MSR_EDITS;", conn, parse_dates={"UDPATE_DATE": "%Y-%m-%d %H:%M:%S"})
+    df_answers = pd.read_sql_query("SELECT * FROM EditHistory WHERE PostTypeId = 2 AND Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_comments = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_edits = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'BodyEdit';", conn, parse_dates={"UDPATE_DATE": "%Y-%m-%d %H:%M:%S"})
     
     return df_answers, df_comments, df_edits
 
