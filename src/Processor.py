@@ -26,10 +26,6 @@ class Processor:
     def process(self):
         # pool = mp.Pool(mp.cpu_count() - 1)
 
-        # print("total number of answers", len(answer_ids))
-        # print("total number of comments", len(list(self.comments["POST_ID"])))
-        # print("total number of edits", len(list(self.edits["POST_ID"])))
-
         # Keep track of stats to write to csv
         stats = []
         for answer in self.answers.itertuples():
@@ -42,10 +38,8 @@ class Processor:
 
             # We want to preserve the ordering on the comments we see
             comment_authors = OrderedDict()
-            # Keep track of user mentions and OP replies in comments
-            comment_replies = []
 
-            for comment_index, comment in enumerate(comments.itertuples()):
+            for comment_index, comment in enumerate(comments.itertuples(), 1):
                 has_code = False
                 has_edits = False
                 has_relevant_code = False
@@ -56,6 +50,9 @@ class Processor:
                     comment_authors[comment_author] += 1
                 else:
                     comment_authors[comment_author] = 1
+
+                # Keep track of user mentions and OP replies in comments
+                comment_replies = []
 
                 # We do not need to preserve the ordering on the edits we see
                 edit_authors = defaultdict(int)
@@ -80,12 +77,9 @@ class Processor:
                         # Determine if the edit has the same groups as the comment
                         edit_groups = find_groups(edit_text)
                         matches = comment_groups & edit_groups
-                        # print(comment_groups)
-                        # print(edit_groups)
-                        # print(matches)
                         if len(matches) > 1:
                             has_relevant_code = True
-                        #break
+
                 edits_by_author = 0
                 edits_by_others = 0
                 for author, count in edit_authors.items():
@@ -93,8 +87,6 @@ class Processor:
                         edits_by_author += 1
                     else:
                         edits_by_others += 1
-
-                # print("edits by author: %i, edits by others: %i" % (edits_by_author, edits_by_others))
 
                 # Check all previous commenters to see if they have a match with the found mention
                 user_mention = find_mentions(comment_text)
@@ -105,16 +97,13 @@ class Processor:
                         for index, (prev_author, count) in enumerate(comment_authors.items()):
                             if mentioned_user == prev_author:
                                 comment_replies.append((mentioned_user, comment_author, comment_index))
-                    elif comment_author == answer_author:
-                        comment_replies.append(("N/A", comment_author, comment_index))
-                # print("Has code: %r, Has edits after: %r, Edit has relevant code: %r" % (has_code, has_edits, has_relevant_code))
+                elif comment_author == answer_author:
+                    comment_replies.append(("N/A", comment_author, comment_index))
                 stats.append([answer_id, getattr(comment, "EventId"), has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
-                # print([getattr(comment, "EventId"), has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
-                #break
-            #break
+
         with open("results.csv", 'w') as f:
             writer = csv.writer(f)
-            writer.writerow(["AnswerId", "CommentId", "Has code", "Has edits after", "Edits have relevant code", "Edits by author", "Edits by others", "Comment mentions/replies"])
+            writer.writerow(["AnswerId", "CommentId", "Has code", "Has edits after", "Edits have relevant code", "Edits by author", "Edits by others", "Comment mentions/replies (mentioned user, comment author, comment number)"])
             writer.writerows(stats)
 
         # buckets = pool.map(self.process_answers, answer_ids)
@@ -153,4 +142,4 @@ class Processor:
     def stats(self):
         tags = get_tags()
         for tag in tags:
-            print(tag)
+            pass
