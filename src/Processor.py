@@ -1,3 +1,4 @@
+import csv
 import multiprocessing as mp
 import pickle
 
@@ -29,6 +30,8 @@ class Processor:
         # print("total number of comments", len(list(self.comments["POST_ID"])))
         # print("total number of edits", len(list(self.edits["POST_ID"])))
 
+        # Keep track of stats to write to csv
+        stats = []
         for answer in self.answers.itertuples():
             # Get the author of the answer
             answer_author = getattr(answer, "UserName")
@@ -36,9 +39,6 @@ class Processor:
 
             comments = self.comments.loc[self.comments["PostId"] == answer_id]
             edits = self.edits.loc[self.edits["PostId"] == answer_id]
-
-            # TODO: Stats should be: CommentId, has_code, has_updates, has_relevant_code, comment_groups, edit_authors
-            stats = dict()
 
             # We want to preserve the ordering on the comments we see
             comment_authors = OrderedDict()
@@ -94,7 +94,7 @@ class Processor:
                     else:
                         edits_by_others += 1
 
-                print("edits by author: %i, edits by others: %i" % (edits_by_author, edits_by_others))
+                # print("edits by author: %i, edits by others: %i" % (edits_by_author, edits_by_others))
 
                 # Check all previous commenters to see if they have a match with the found mention
                 user_mention = find_mentions(comment_text)
@@ -107,9 +107,15 @@ class Processor:
                                 comment_replies.append((mentioned_user, comment_author, comment_index))
                     elif comment_author == answer_author:
                         comment_replies.append(("N/A", comment_author, comment_index))
-                print("Has code: %r, Has edits after: %r, Edit has relevant code: %r" % (has_code, has_edits, has_relevant_code))
+                # print("Has code: %r, Has edits after: %r, Edit has relevant code: %r" % (has_code, has_edits, has_relevant_code))
+                stats.append([answer_id, getattr(comment, "EventId"), has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
+                # print([getattr(comment, "EventId"), has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
                 #break
-            break
+            #break
+        with open("results.csv", 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(["AnswerId", "CommentId", "Has code", "Has edits after", "Edits have relevant code", "Edits by author", "Edits by others", "Comment mentions/replies"])
+            writer.writerows(stats)
 
         # buckets = pool.map(self.process_answers, answer_ids)
         # pool.close()
