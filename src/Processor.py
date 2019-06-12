@@ -24,7 +24,7 @@ class Processor:
 
     def process(self):
         # pool = mp.Pool(mp.cpu_count() - 1)
-        answer_ids = list(self.answers["ANSWER_ID"])
+        answer_ids = list(self.answers["PostId"])
 
         # print("total number of answers", len(answer_ids))
         # print("total number of comments", len(list(self.comments["POST_ID"])))
@@ -36,8 +36,8 @@ class Processor:
             # TODO: Get the author of the answer
             # answer_author = getattr(answer, "UserName")
 
-            comments = self.comments.loc[self.comments["POST_ID"] == answer_id]
-            edits = self.edits.loc[self.edits["POST_ID"] == answer_id]
+            comments = self.comments.loc[self.comments["PostId"] == answer_id]
+            edits = self.edits.loc[self.edits["PostId"] == answer_id]
 
             # TODO: Stats should be: CommentId, has_code, has_updates, has_relevant_code, comment_groups, edit_authors
             stats = dict()
@@ -56,16 +56,16 @@ class Processor:
                 # TODO: Keep track of comment authors and their position
                 # comment_authors[getattr(comment, "UserName")] += 1
 
-                comment_text = getattr(comment, "TEXT")
-                comment_date = getattr(comment, "CREATION_DATE")
+                comment_text = getattr(comment, "Text")
+                comment_date = getattr(comment, "CreationDate")
 
                 comment_groups = find_groups(comment_text)
                 if len(comment_groups) > 0:
                     has_code = True
 
                 for edit in edits.itertuples():
-                    edit_text = getattr(edit, "CONTENT")
-                    edit_date = getattr(edit, "UPDATE_DATE")
+                    edit_text = getattr(edit, "Text")
+                    edit_date = getattr(edit, "CreationDate")
                     # Only look at the edit if it occurred after the comment
                     if comment_date < edit_date:
                         has_edits = True
@@ -99,11 +99,11 @@ class Processor:
 
     def process_answers(self, answer_id):
         print("answer id:", answer_id)
-        comments = self.comments.loc[self.comments['POST_ID'] == answer_id]
+        comments = self.comments.loc[self.comments['PostId'] == answer_id]
 
         print("Comments", comments)
 
-        edits = self.edits.loc[self.edits['POST_ID'] == answer_id]
+        edits = self.edits.loc[self.edits['PostId'] == answer_id]
         print("Edits", edits)
 
         if len(edits) == 0:
