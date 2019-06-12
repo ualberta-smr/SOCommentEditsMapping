@@ -24,17 +24,15 @@ class Processor:
 
     def process(self):
         # pool = mp.Pool(mp.cpu_count() - 1)
-        answer_ids = list(self.answers["PostId"])
 
         # print("total number of answers", len(answer_ids))
         # print("total number of comments", len(list(self.comments["POST_ID"])))
         # print("total number of edits", len(list(self.edits["POST_ID"])))
 
-        for answer_id in answer_ids:
-            # print("Answer id ", answer_id)
-
-            # TODO: Get the author of the answer
-            # answer_author = getattr(answer, "UserName")
+        for answer in self.answers.itertuples():
+            # Get the author of the answer
+            answer_author = getattr(answer, "UserName")
+            answer_id = getattr(answer, "PostId")
 
             comments = self.comments.loc[self.comments["PostId"] == answer_id]
             edits = self.edits.loc[self.edits["PostId"] == answer_id]
@@ -44,9 +42,7 @@ class Processor:
 
             # TODO: Keep track of comment and edit authors
             # We want to preserve the ordering on the comments we see
-            # comment_authors = OrderedDict()
-            # We do not need to preserve the ordering on the edits we see
-            # edit_authors = defaultdict(int)
+            comment_authors = OrderedDict()
 
             for comment in comments.itertuples():
                 has_code = False
@@ -54,7 +50,14 @@ class Processor:
                 has_relevant_code = False
 
                 # TODO: Keep track of comment authors and their position
-                # comment_authors[getattr(comment, "UserName")] += 1
+                comment_author = getattr(comment, "UserName")
+                if comment_author in comment_authors:
+                    comment_authors[comment_author] += 1
+                else:
+                    comment_authors[comment_author] = 1
+
+                # We do not need to preserve the ordering on the edits we see
+                edit_authors = defaultdict(int)
 
                 comment_text = getattr(comment, "Text")
                 comment_date = getattr(comment, "CreationDate")
@@ -70,14 +73,27 @@ class Processor:
                     if comment_date < edit_date:
                         has_edits = True
 
-                        # TODO: Keep a counter of which authors make an edit
-                        # edit_authors[getattr(edit, "UserName")] += 1
+                        # Keep a counter of which authors make an edit
+                        edit_authors[getattr(edit, "UserName")] += 1
 
                         # Determine if the edit has the same groups as the comment
                         edit_groups = find_groups(edit_text)
                         matches = comment_groups & edit_groups
+                        # print(comment_groups)
+                        # print(edit_groups)
+                        # print(matches)
                         if len(matches) > 1:
                             has_relevant_code = True
+                        #break
+                edits_by_author = 0
+                edits_by_others = 0
+                for author, count in edit_authors.items():
+                    if author == answer_author:
+                        edits_by_author += 1
+                    else:
+                        edits_by_others += 1
+
+                print("edits by author: %i, edits by others: %i" % (edits_by_author, edits_by_others))
 
                 # TODO: Check all previous commenters to see if they have a match with the found mention
                 # user_mention = find_mentions(comment_text)
@@ -86,8 +102,15 @@ class Processor:
                 #     if len(user) > 0:
                 #         if user == comment_author:
                 #             increment counter
-                print(has_code, has_edits, has_relevant_code)
+                print("Has code: %r, Has edits after: %r, Edit has relevant code: %r" % (has_code, has_edits, has_relevant_code))
+                #break
 
+            answer_author_positions = []
+            for index, (author, count) in enumerate(comment_authors.items()):
+                if author == answer_author:
+                    answer_author_positions.append(index)
+
+            print(answer_author_positions)
             break
 
         # buckets = pool.map(self.process_answers, answer_ids)
