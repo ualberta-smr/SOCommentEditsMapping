@@ -43,9 +43,7 @@ class Processor:
             comment_authors = OrderedDict()
 
             for comment_index, comment in enumerate(sorted_comments.itertuples(), 1):
-                has_code = False
                 has_edits = False
-                has_relevant_code = False
 
                 # Keep track of comment authors and their position
                 comment_author = getattr(comment, "UserName")
@@ -63,9 +61,11 @@ class Processor:
                 comment_text = getattr(comment, "Text")
                 comment_date = getattr(comment, "CreationDate")
 
+                # Get the regex groups that the comment matches
                 comment_groups = find_groups(comment_text)
-                if len(comment_groups) > 0:
-                    has_code = True
+
+                # Keep track of which edits have relevant code (EditId, Matching Code)
+                relevant_code_matches = []
 
                 for edit in sorted_edits.itertuples():
                     edit_text = getattr(edit, "Text")
@@ -81,7 +81,7 @@ class Processor:
                         edit_groups = find_groups(edit_text)
                         matches = comment_groups & edit_groups
                         if len(matches) > 1:
-                            has_relevant_code = True
+                            relevant_code_matches.append((getattr(edit, "EventId"), matches))
 
                 edits_by_author = 0
                 edits_by_others = 0
@@ -107,11 +107,33 @@ class Processor:
                 # Handle the case where the OP makes a comment but not in reference to someone else
                 elif comment_author == answer_author:
                     comment_replies.append(("N/A", comment_author))
-                stats.append([answer_id, getattr(comment, "EventId"), answer_author, comment_author, comment_index, comment_date, has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
+                stats.append([answer_id,
+                              getattr(comment, "EventId"),
+                              answer_author,
+                              comment_author,
+                              comment_index,
+                              comment_date,
+                              comment_groups if len(comment_groups) > 0 else "",
+                              has_edits,
+                              relevant_code_matches if len(relevant_code_matches) > 0 else "",
+                              edits_by_author,
+                              edits_by_others,
+                              comment_replies if len(comment_replies) > 0 else ""])
 
         with open("results.csv", 'w') as f:
             writer = csv.writer(f)
-            writer.writerow(["AnswerId", "CommentId", "AnswerAuthor", "CommentAuthor", "CommentIndex", "CommentDate", "Has code", "Has edits after", "Edits have relevant code", "Edits by author", "Edits by others", "Comment mentions/replies (mentioned user, comment author)"])
+            writer.writerow(["AnswerId",
+                             "CommentId",
+                             "AnswerAuthor",
+                             "CommentAuthor",
+                             "CommentIndex",
+                             "CommentDate",
+                             "Has code",
+                             "Has edits after",
+                             "Edits have relevant code",
+                             "Edits by author",
+                             "Edits by others",
+                             "Comment mentions/replies (mentioned user, comment author)"])
             writer.writerows(stats)
 
         # buckets = pool.map(self.process_answers, answer_ids)
