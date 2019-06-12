@@ -35,14 +35,14 @@ class Processor:
 
             # Retrieve all the comments and edits on this answer and sort them ascending by time
             comments = self.comments.loc[self.comments["PostId"] == answer_id]
-            comments.sort_values(by=['CreationDate'], inplace=True)
+            sorted_comments = comments.sort_values(by=['CreationDate'])
             edits = self.edits.loc[self.edits["PostId"] == answer_id]
-            edits.sort_values(by=['CreationDate'], inplace=True)
+            sorted_edits = edits.sort_values(by=['CreationDate'])
 
             # We want to preserve the ordering on the comments we see
             comment_authors = OrderedDict()
 
-            for comment_index, comment in enumerate(comments.itertuples(), 1):
+            for comment_index, comment in enumerate(sorted_comments.itertuples(), 1):
                 has_code = False
                 has_edits = False
                 has_relevant_code = False
@@ -67,7 +67,7 @@ class Processor:
                 if len(comment_groups) > 0:
                     has_code = True
 
-                for edit in edits.itertuples():
+                for edit in sorted_edits.itertuples():
                     edit_text = getattr(edit, "Text")
                     edit_date = getattr(edit, "CreationDate")
                     # Only look at the edit if it occurred after the comment
@@ -97,16 +97,21 @@ class Processor:
                     mentioned_user = user_mention.group(0)[1:]
                     # Check for zero-length match
                     if len(mentioned_user) > 0:
+                        # TODO: Currently this will only find mentions to ONE user,
+                        # TODO: Will find matches with previous comments by same user as well even if already addressed
+                        # ie. User1, User2, User1, User3, User4. This will match User4 to both instances of User1,
+                        # even if it was only addressing the second instance
                         for index, (prev_author, count) in enumerate(comment_authors.items()):
                             if mentioned_user == prev_author:
-                                comment_replies.append((mentioned_user, comment_author, comment_index))
+                                comment_replies.append((mentioned_user, comment_author))
+                # Handle the case where the OP makes a comment but not in reference to someone else
                 elif comment_author == answer_author:
-                    comment_replies.append(("N/A", comment_author, comment_index))
-                stats.append([answer_id, getattr(comment, "EventId"), has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
+                    comment_replies.append(("N/A", comment_author))
+                stats.append([answer_id, getattr(comment, "EventId"), answer_author, comment_author, comment_index, comment_date, has_code, has_edits, has_relevant_code, edits_by_author, edits_by_others, comment_replies])
 
         with open("results.csv", 'w') as f:
             writer = csv.writer(f)
-            writer.writerow(["AnswerId", "CommentId", "Has code", "Has edits after", "Edits have relevant code", "Edits by author", "Edits by others", "Comment mentions/replies (mentioned user, comment author, comment number)"])
+            writer.writerow(["AnswerId", "CommentId", "AnswerAuthor", "CommentAuthor", "CommentIndex", "CommentDate", "Has code", "Has edits after", "Edits have relevant code", "Edits by author", "Edits by others", "Comment mentions/replies (mentioned user, comment author)"])
             writer.writerows(stats)
 
         # buckets = pool.map(self.process_answers, answer_ids)
