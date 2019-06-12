@@ -33,8 +33,11 @@ class Processor:
             answer_author = getattr(answer, "UserName")
             answer_id = getattr(answer, "PostId")
 
+            # Retrieve all the comments and edits on this answer and sort them ascending by time
             comments = self.comments.loc[self.comments["PostId"] == answer_id]
+            comments.sort_values(by=['CreationDate'], inplace=True)
             edits = self.edits.loc[self.edits["PostId"] == answer_id]
+            edits.sort_values(by=['CreationDate'], inplace=True)
 
             # We want to preserve the ordering on the comments we see
             comment_authors = OrderedDict()
