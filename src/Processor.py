@@ -40,16 +40,17 @@ class Processor:
             # TODO: Stats should be: CommentId, has_code, has_updates, has_relevant_code, comment_groups, edit_authors
             stats = dict()
 
-            # TODO: Keep track of comment and edit authors
             # We want to preserve the ordering on the comments we see
             comment_authors = OrderedDict()
+            # Keep track of user mentions and OP replies in comments
+            comment_replies = []
 
-            for comment in comments.itertuples():
+            for comment_index, comment in enumerate(comments.itertuples()):
                 has_code = False
                 has_edits = False
                 has_relevant_code = False
 
-                # TODO: Keep track of comment authors and their position
+                # Keep track of comment authors and their position
                 comment_author = getattr(comment, "UserName")
                 if comment_author in comment_authors:
                     comment_authors[comment_author] += 1
@@ -95,22 +96,19 @@ class Processor:
 
                 print("edits by author: %i, edits by others: %i" % (edits_by_author, edits_by_others))
 
-                # TODO: Check all previous commenters to see if they have a match with the found mention
-                # user_mention = find_mentions(comment_text)
-                # if user_mention is not None:
-                #     user = user_mention.expand("\1")
-                #     if len(user) > 0:
-                #         if user == comment_author:
-                #             increment counter
+                # Check all previous commenters to see if they have a match with the found mention
+                user_mention = find_mentions(comment_text)
+                if user_mention is not None:
+                    mentioned_user = user_mention.group(0)[1:]
+                    # Check for zero-length match
+                    if len(mentioned_user) > 0:
+                        for index, (prev_author, count) in enumerate(comment_authors.items()):
+                            if mentioned_user == prev_author:
+                                comment_replies.append((mentioned_user, comment_author, comment_index))
+                    elif comment_author == answer_author:
+                        comment_replies.append(("N/A", comment_author, comment_index))
                 print("Has code: %r, Has edits after: %r, Edit has relevant code: %r" % (has_code, has_edits, has_relevant_code))
                 #break
-
-            answer_author_positions = []
-            for index, (author, count) in enumerate(comment_authors.items()):
-                if author == answer_author:
-                    answer_author_positions.append(index)
-
-            print(answer_author_positions)
             break
 
         # buckets = pool.map(self.process_answers, answer_ids)
