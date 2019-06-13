@@ -55,9 +55,6 @@ class Processor:
                 # Keep track of user mentions and OP replies in comments
                 comment_replies = []
 
-                # We do not need to preserve the ordering on the edits we see
-                edit_authors = defaultdict(int)
-
                 comment_text = getattr(comment, "Text")
                 comment_date = getattr(comment, "CreationDate")
 
@@ -67,6 +64,10 @@ class Processor:
                 # Keep track of which edits have relevant code (EditId, Matching Code)
                 relevant_code_matches = []
 
+                # Keep track of how many edits are by the OP and how many by others
+                edits_by_author = 0
+                edits_by_others = 0
+
                 for edit in sorted_edits.itertuples():
                     edit_text = getattr(edit, "Text")
                     edit_date = getattr(edit, "CreationDate")
@@ -75,21 +76,16 @@ class Processor:
                         has_edits = True
 
                         # Keep a counter of which authors make an edit
-                        edit_authors[getattr(edit, "UserName")] += 1
+                        if getattr(edit, "UserName") == answer_author:
+                            edits_by_author += 1
+                        else:
+                            edits_by_others += 1
 
                         # Determine if the edit has the same groups as the comment
                         edit_groups = find_groups(edit_text)
                         matches = comment_groups & edit_groups
                         if len(matches) > 1:
                             relevant_code_matches.append((getattr(edit, "EventId"), matches))
-
-                edits_by_author = 0
-                edits_by_others = 0
-                for author, count in edit_authors.items():
-                    if author == answer_author:
-                        edits_by_author += 1
-                    else:
-                        edits_by_others += 1
 
                 # Check all previous commenters to see if they have a match with the found mention
                 user_mention = find_mentions(comment_text)
