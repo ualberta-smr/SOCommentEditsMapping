@@ -15,32 +15,20 @@ def setup_sqlite(conn):
             SELECT
               pv.PostId AS PostId,
               pv.PostTypeId AS PostTypeId,
-              PostHistoryId AS EventId,
+              ph.Id AS EventId,
               CASE
                 WHEN pv.PostHistoryTypeId=2 THEN "InitialBody"
                 ELSE "BodyEdit"
               END AS Event,
               u.DisplayName AS UserName,
               pv.CreationDate AS CreationDate,
+              p.Tags AS Tags,
               ph.Text AS Text
             FROM PostVersion pv
             JOIN PostHistory ph ON pv.PostHistoryId = ph.Id
             JOIN Users u ON ph.UserId = u.Id
-            UNION ALL
-            SELECT
-              tv.PostId AS PostId,
-              tv.PostTypeId AS PostTypeId,
-              PostHistoryId AS EventId,
-              CASE
-                WHEN tv.PostHistoryTypeId=1 THEN "InitialTitle"
-                ELSE "TitleEdit"
-              END AS Event,
-              u.DisplayName AS UserName,
-              tv.CreationDate AS CreationDate,
-              ph.Text AS Text
-            FROM TitleVersion tv
-            JOIN PostHistory ph ON tv.PostHistoryId = ph.Id
-            JOIN Users u ON ph.UserId = u.Id
+            JOIN Posts p ON pv.PostId = p.Id
+            WHERE p.Id IN (SELECT PostId FROM PostBlockVersion WHERE PostBlockTypeId = 2)
             UNION ALL
             SELECT
               PostId,
@@ -49,6 +37,7 @@ def setup_sqlite(conn):
               "Comment" AS Event,
               u.DisplayName AS UserName,
               c.CreationDate AS CreationDate,
+              p.Tags As Tags,
               c.Text AS Text
             FROM Comments c
             JOIN Posts p ON c.PostId = p.Id
@@ -67,7 +56,7 @@ def get_data(conn):
 
     df_answers = pd.read_sql_query("SELECT * FROM EditHistory WHERE PostTypeId = 2 AND Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_comments = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_edits = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'BodyEdit';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_edits = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' OR Event = 'BodyEdit';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     
     return df_answers, df_comments, df_edits
 

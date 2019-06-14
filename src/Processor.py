@@ -5,6 +5,7 @@ import pickle
 from collections import defaultdict, OrderedDict
 from RegexPatterns import find_groups
 from RegexPatterns import find_mentions
+from RegexPatterns import find_code
 
 
 def get_tags():
@@ -59,6 +60,9 @@ class Processor:
                 comment_date = getattr(comment, "CreationDate")
 
                 # Get the regex groups that the comment matches
+                comment_code = find_code(comment_text)
+                for code in comment_code:
+                    comment_text = comment_text.replace(code, "")
                 comment_groups = find_groups(comment_text)
 
                 # Keep track of which edits have relevant code (EditId, Matching Code)
@@ -68,12 +72,19 @@ class Processor:
                 edits_by_author = 0
                 edits_by_others = 0
 
-                for edit in sorted_edits.itertuples():
-                    edit_text = getattr(edit, "Text")
+                prev_edit = None
+                for edit_index, edit in enumerate(sorted_edits.itertuples()):
+                    # The first edit is actually the initial body so we skip it
+                    # We need the initial body to take the diff with the next edit
+                    if edit_index == 1:
+                        prev_edit = edit
+                        continue
+
                     edit_date = getattr(edit, "CreationDate")
                     # Only look at the edit if it occurred after the comment
                     if comment_date < edit_date:
                         has_edits = True
+                        edit_text = getattr(edit, "Text")
 
                         # Keep a counter of which authors make an edit
                         if getattr(edit, "UserName") == answer_author:
@@ -81,19 +92,22 @@ class Processor:
                         else:
                             edits_by_others += 1
 
+                        prev_edit_code = find_code(getattr(prev_edit, "Text"))
+                        prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
                         # Determine if the edit has the same groups as the comment
+                        edit_code = find_code(edit_text)
+                        for code in edit_code:
+                            edit_text = edit_text.replace(code, "")
                         edit_groups = find_groups(edit_text)
-                        matches = comment_groups & edit_groups
+                        matches = comment_groups & (edit_groups ^ prev_edit_groups) | comment_code & (edit_code ^ prev_edit_code)
                         if len(matches) > 1:
                             relevant_code_matches.append((getattr(edit, "EventId"), matches))
+                    prev_edit = edit
 
                 # Check all previous commenters to see if they have a match with the found mention
-                user_mention = find_mentions(comment_text)
-                if user_mention is not None:
-                    mentioned_user = user_mention.group(0)[1:]
-                    # Check for zero-length match
-                    if len(mentioned_user) > 0:
-                        # TODO: Currently this will only find mentions to ONE user,
+                user_mentions = find_mentions(comment_text)
+                if len(user_mentions) > 0:
+                    for mentioned_user in user_mentions:
                         # TODO: Will find matches with previous comments by same user as well even if already addressed
                         # ie. User1, User2, User1, User3, User4. This will match User4 to both instances of User1,
                         # even if it was only addressing the second instance
