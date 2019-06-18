@@ -123,6 +123,8 @@ class Processor:
                               comment_author,
                               comment_index,
                               comment_date,
+                              getattr(comment, "Score"),
+                              comment_text,
                               comment_groups if len(comment_groups) > 0 else "",
                               has_edits,
                               relevant_code_matches if len(relevant_code_matches) > 0 else "",
@@ -138,9 +140,11 @@ class Processor:
                              "CommentAuthor",
                              "CommentIndex",
                              "CommentDate",
-                             "Has code",
+                             "Comment Score"
+                             "Comment"
+                             "Comment Groups",
                              "Has edits after",
-                             "Edits have relevant code",
+                             "Edit Groups (EditId, Matched Groups)",
                              "Edits by author",
                              "Edits by others",
                              "Comment mentions/replies (mentioned user, comment author)"])
