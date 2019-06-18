@@ -2,7 +2,7 @@ import csv
 import multiprocessing as mp
 import pickle
 
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 from RegexPatterns import find_groups
 from RegexPatterns import find_mentions
 from RegexPatterns import find_code
@@ -25,8 +25,6 @@ class Processor:
         self.dataset = []
 
     def process(self):
-        # pool = mp.Pool(mp.cpu_count() - 1)
-
         # Keep track of stats to write to csv
         stats = []
         for answer in self.answers.itertuples():
@@ -61,10 +59,12 @@ class Processor:
 
                 # Get the regex groups that the comment matches
                 comment_code = find_code(comment_text)
+                # Remove the found code from the comment and run the regex to look for keywords after the replacement
                 for code in comment_code:
-                    comment_text = comment_text.replace(code, "")
+                    # We need to add "`" and "<code>" surrounding tags because that's what it is in the text
+                    comment_text = comment_text.replace("`"+code+"`", "")
+                    comment_text = comment_text.replace("<code>"+code+"</code>", "")
                 comment_groups = find_groups(comment_text)
-
                 # Keep track of which edits have relevant code (EditId, Matching Code)
                 relevant_code_matches = []
 
@@ -117,6 +117,9 @@ class Processor:
                 # Handle the case where the OP makes a comment but not in reference to someone else
                 elif comment_author == answer_author:
                     comment_replies.append(("N/A", comment_author))
+
+                # Combine the comment code and keywords found
+                comment_groups = comment_groups | comment_code
                 stats.append([answer_id,
                               getattr(comment, "EventId"),
                               answer_author,
@@ -124,7 +127,7 @@ class Processor:
                               comment_index,
                               comment_date,
                               getattr(comment, "Score"),
-                              comment_text,
+                              getattr(comment, "Text"),
                               comment_groups if len(comment_groups) > 0 else "",
                               has_edits,
                               relevant_code_matches if len(relevant_code_matches) > 0 else "",
@@ -140,8 +143,8 @@ class Processor:
                              "CommentAuthor",
                              "CommentIndex",
                              "CommentDate",
-                             "Comment Score"
-                             "Comment"
+                             "Comment Score",
+                             "Comment",
                              "Comment Groups",
                              "Has edits after",
                              "Edit Groups (EditId, Matched Groups)",
@@ -149,13 +152,6 @@ class Processor:
                              "Edits by others",
                              "Comment mentions/replies (mentioned user, comment author)"])
             writer.writerows(stats)
-
-        # buckets = pool.map(self.process_answers, answer_ids)
-        # pool.close()
-        # pool.join()
-        # self.dataset = [b for b in buckets if b is not None]
-        # with open('dataset.pickle', 'wb') as file:
-        #     pickle.dump(self.dataset, file)
 
     def process_answers(self, answer_id):
         print("answer id:", answer_id)

@@ -62,9 +62,6 @@ def get_data(conn):
     df_answers = pd.read_sql_query("SELECT * FROM EditHistory WHERE PostTypeId = 2 AND Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_comments = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_edits = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' OR Event = 'BodyEdit';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    # df_answers = pd.read_sql_query("SELECT * FROM EditHistory WHERE PostTypeId = 2 AND Event = 'InitialBody' AND PostId = 580252;", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    # df_comments = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'Comment' AND PostId = 580252;", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    # df_edits = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'BodyEdit' AND PostId = 580252;", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     
     return df_answers, df_comments, df_edits
 
