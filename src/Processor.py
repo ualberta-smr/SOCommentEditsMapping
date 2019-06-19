@@ -60,10 +60,7 @@ class Processor:
                 # Get the regex groups that the comment matches
                 comment_code = find_code(comment_text)
                 # Remove the found code from the comment and run the regex to look for keywords after the replacement
-                for code in comment_code:
-                    # We need to add "`" and "<code>" surrounding tags because that's what it is in the text
-                    comment_text = comment_text.replace("`"+code+"`", "")
-                    comment_text = comment_text.replace("<code>"+code+"</code>", "")
+                comment_text = self.remove_code(comment_text, comment_code)
                 comment_groups = find_groups(comment_text)
                 # Keep track of which edits have relevant code (EditId, Matching Code)
                 relevant_code_matches = []
@@ -73,7 +70,8 @@ class Processor:
                 edits_by_others = 0
 
                 prev_edit = None
-                for edit_index, edit in enumerate(sorted_edits.itertuples()):
+                # We start the index from two so it is easier to compare with the stack overflow revision page
+                for edit_index, edit in enumerate(sorted_edits.itertuples(), 1):
                     # The first edit is actually the initial body so we skip it
                     # We need the initial body to take the diff with the next edit
                     if edit_index == 1:
@@ -84,7 +82,6 @@ class Processor:
                     # Only look at the edit if it occurred after the comment
                     if comment_date < edit_date:
                         has_edits = True
-                        edit_text = getattr(edit, "Text")
 
                         # Keep a counter of which authors make an edit
                         if getattr(edit, "UserName") == answer_author:
@@ -92,15 +89,11 @@ class Processor:
                         else:
                             edits_by_others += 1
 
-                        prev_edit_code = find_code(getattr(prev_edit, "Text"))
                         prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
+                        edit_groups = find_groups(getattr(edit, "Text"))
                         # Determine if the edit has the same groups as the comment
-                        edit_code = find_code(edit_text)
-                        for code in edit_code:
-                            edit_text = edit_text.replace(code, "")
-                        edit_groups = find_groups(edit_text)
-                        matches = comment_groups & (edit_groups ^ prev_edit_groups) | comment_code & (edit_code ^ prev_edit_code)
-                        if len(matches) > 1:
+                        matches = (comment_code | comment_groups) & (edit_groups ^ prev_edit_groups)
+                        if len(matches) > 0:
                             relevant_code_matches.append((getattr(edit, "EventId"), matches))
                     prev_edit = edit
 
@@ -111,8 +104,9 @@ class Processor:
                         # TODO: Will find matches with previous comments by same user as well even if already addressed
                         # ie. User1, User2, User1, User3, User4. This will match User4 to both instances of User1,
                         # even if it was only addressing the second instance
-                        for index, (prev_author, count) in enumerate(comment_authors.items()):
-                            if mentioned_user == prev_author:
+                        for prev_author, count in comment_authors.items():
+                            # Remove the '@' in front of the name
+                            if mentioned_user[1:] == prev_author:
                                 comment_replies.append((mentioned_user, comment_author))
                 # Handle the case where the OP makes a comment but not in reference to someone else
                 elif comment_author == answer_author:
@@ -152,6 +146,13 @@ class Processor:
                              "Edits by others",
                              "Comment mentions/replies (mentioned user, comment author)"])
             writer.writerows(stats)
+
+    @staticmethod
+    def remove_code(text, patterns):
+        for pattern in patterns:
+            text = text.replace("`" + pattern + "`", "")
+            text = text.replace("<code>" + pattern + "</code>", "")
+        return text
 
     def process_answers(self, answer_id):
         print("answer id:", answer_id)

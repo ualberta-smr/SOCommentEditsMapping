@@ -31,7 +31,6 @@ def find_groups(text):
                 re.compile("\{\%[^\%]*\%\}"),
                 re.compile("/[^/]*/"),
                 re.compile("‘[^’]*’"),
-                re.compile("'[^']*'"),
                 re.compile("__[^_]*__"),
                 re.compile("\$[A-Za-z\_]+"),
                 re.compile("[A-Z]?[a-z]+[A-Z]+[a-z]*")]
