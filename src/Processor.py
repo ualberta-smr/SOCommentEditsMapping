@@ -1,8 +1,7 @@
 import csv
-import multiprocessing as mp
-import pickle
+import matplotlib.pyplot as plt
 
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 from RegexPatterns import find_groups
 from RegexPatterns import find_mentions
 from RegexPatterns import find_code
@@ -27,6 +26,12 @@ class Processor:
     def process(self):
         # Keep track of stats to write to csv
         stats = []
+
+        total_answers = self.answers.shape[0]
+        total_comments = self.comments.shape[0]
+        total_updates = 0
+        edit_updates = defaultdict(int)
+        answer_edits = dict()
         for answer in self.answers.itertuples():
             # Get the author of the answer
             answer_author = getattr(answer, "UserName")
@@ -37,6 +42,8 @@ class Processor:
             sorted_comments = comments.sort_values(by=['CreationDate'])
             edits = self.edits.loc[self.edits["PostId"] == answer_id]
             sorted_edits = edits.sort_values(by=['CreationDate'])
+
+            answer_edits[str(answer_id)] = sorted_edits.shape[0]
 
             # We want to preserve the ordering on the comments we see
             comment_authors = OrderedDict()
@@ -94,7 +101,10 @@ class Processor:
                         # Determine if the edit has the same groups as the comment
                         matches = (comment_code | comment_groups) & (edit_groups ^ prev_edit_groups)
                         if len(matches) > 0:
-                            relevant_code_matches.append((getattr(edit, "EventId"), matches))
+                            total_updates += 1
+                            edit_id = getattr(edit, "EventId")
+                            edit_updates[edit_id] += 1
+                            relevant_code_matches.append((edit_id, matches))
                     prev_edit = edit
 
                 # Check all previous commenters to see if they have a match with the found mention
@@ -146,6 +156,26 @@ class Processor:
                              "Edits by others",
                              "Comment mentions/replies (mentioned user, comment author)"])
             writer.writerows(stats)
+
+        edits_dist = defaultdict(int)
+        for value in answer_edits.values():
+            edits_dist[value] += 1
+        fig, ax = plt.subplots()
+        ax.set_title("Num of answers per num of edits")
+        ax.set_ylabel("Number of answers")
+        ax.set_xlabel("Number of edits")
+        ax.bar(list(edits_dist.keys()), edits_dist.values(), 0.5, color='g')
+        # plt.show()
+        plt.savefig('AnswersPerEdit.png')
+        total = 0
+        for value in edit_updates.values():
+            total += value
+        file = open("stats.txt", "w")
+        file.write("Total answers analyzed: " + str(total_answers) + "\n")
+        file.write("Total comments analyzed: " + str(total_comments) + "\n")
+        file.write("Total updates analyzed: " + str(total_updates) + "\n")
+        file.write("Average number of comments per edit: " + str(total/len(edit_updates.keys())))
+        file.close()
 
     @staticmethod
     def remove_code(text, patterns):

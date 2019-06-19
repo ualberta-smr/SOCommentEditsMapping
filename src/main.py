@@ -16,10 +16,6 @@ def setup_sqlite(conn):
               pv.PostId AS PostId,
               p.ParentId AS ParentId,
               pv.PostTypeId AS PostTypeId,
-              CASE
-                WHEN pbv.PostBlockTypeId = 1 THEN "TextBlock"
-                ELSE "CodeBlock"
-              END AS PostBlockType,
               ph.Id AS EventId,
               CASE
                 WHEN pv.PostHistoryTypeId=2 THEN "InitialBody"
@@ -29,19 +25,17 @@ def setup_sqlite(conn):
               pv.CreationDate AS CreationDate,
               p.Tags AS Tags,
               p.Score AS Score,
-              pbv.Content AS Text
+              ph.Text AS Text
             FROM PostVersion pv
             JOIN PostHistory ph ON pv.PostHistoryId = ph.Id
             JOIN Users u ON ph.UserId = u.Id
             JOIN Posts p ON pv.PostId = p.Id
-            JOIN PostBlockVersion pbv ON p.Id = pbv.PostId
             WHERE p.Id IN (SELECT DISTINCT pbv.PostId FROM PostBlockVersion pbv WHERE PostBlockTypeId = 2)
             UNION ALL
             SELECT
               p.Id AS PostId,
               p.ParentId AS ParentId,
               p.PostTypeId AS PostTypeId,
-              "Comment" AS PostBlockType,
               c.Id AS EventId,
               "Comment" AS Event,
               u.DisplayName AS UserName,
@@ -67,8 +61,22 @@ def get_data(conn):
 
     df_answers = pd.read_sql_query("SELECT * FROM EditHistory WHERE PostTypeId = 2 AND Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_comments = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_edits = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' OR Event = 'BodyEdit';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    
+    df_edits = pd.read_sql_query("SELECT eh.PostId, "
+                                 "eh.ParentId, "
+                                 "eh.PostTypeId, "
+                                 "eh.EventId, "
+                                 "eh.Event, "
+                                 "eh.UserName, "
+                                 "eh.CreationDate, "
+                                 "eh.Tags, "
+                                 "eh.Score, "
+                                 "pbv.Content AS Text "
+                                 "FROM PostBlockVersion pbv JOIN EditHistory eh ON eh.EventId = pbv.PostHistoryId "
+                                 "WHERE pbv.PostBlockTypeId = 2 "
+                                 "UNION ALL "
+                                 "SELECT * FROM EditHistory WHERE Event = 'InitialBody';", conn,
+                                 parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+
     return df_answers, df_comments, df_edits
 
 
