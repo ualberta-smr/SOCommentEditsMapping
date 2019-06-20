@@ -76,15 +76,10 @@ class Processor:
                 edits_by_author = 0
                 edits_by_others = 0
 
-                prev_edit = None
+                # The answer is the initial body of the answer
+                prev_edit = answer
                 # We start the index from two so it is easier to compare with the stack overflow revision page
-                for edit_index, edit in enumerate(sorted_edits.itertuples(), 1):
-                    # The first edit is actually the initial body so we skip it
-                    # We need the initial body to take the diff with the next edit
-                    if edit_index == 1:
-                        prev_edit = edit
-                        continue
-
+                for edit_index, edit in enumerate(sorted_edits.itertuples(), 2):
                     edit_date = getattr(edit, "CreationDate")
                     # Only look at the edit if it occurred after the comment
                     if comment_date < edit_date:
@@ -173,8 +168,9 @@ class Processor:
         file = open("stats.txt", "w")
         file.write("Total answers analyzed: " + str(total_answers) + "\n")
         file.write("Total comments analyzed: " + str(total_comments) + "\n")
-        file.write("Total updates analyzed: " + str(total_updates) + "\n")
-        file.write("Average number of comments per edit: " + str(total/len(edit_updates.keys())))
+        file.write("Total comments marked as Update: " + str(total_updates) + "\n")
+        file.write("Average number of comments per edit: "
+                   + str(total/len(edit_updates.keys()) if len(edit_updates.keys()) > 0 else "0"))
         file.close()
 
     @staticmethod

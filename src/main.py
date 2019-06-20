@@ -59,8 +59,26 @@ def setup_sqlite(conn):
 
 def get_data(conn):
 
-    df_answers = pd.read_sql_query("SELECT * FROM EditHistory WHERE PostTypeId = 2 AND Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_comments = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_answers = pd.read_sql_query("SELECT eh.PostId, "
+                                   "eh.ParentId, "
+                                   "eh.PostTypeId, "
+                                   "eh.EventId, "
+                                   "eh.Event, "
+                                   "eh.UserName, "
+                                   "eh.CreationDate, "
+                                   "eh.Tags, "
+                                   "eh.Score, "
+                                   "GROUP_CONCAT(pbv.Content, '') AS Text "
+                                   "FROM PostBlockVersion pbv "
+                                   "JOIN EditHistory eh ON eh.EventId = pbv.PostHistoryId "
+                                   "WHERE pbv.PostBlockTypeId = 2 "
+                                   "AND eh.PostTypeId = 2 "
+                                   "AND eh.Event = 'InitialBody' "
+                                   "GROUP BY eh.EventId;", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_comments = pd.read_sql_query("SELECT * "
+                                    "FROM EditHistory "
+                                    "WHERE PostTypeId = 2 "
+                                    "AND Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_edits = pd.read_sql_query("SELECT eh.PostId, "
                                  "eh.ParentId, "
                                  "eh.PostTypeId, "
@@ -70,12 +88,11 @@ def get_data(conn):
                                  "eh.CreationDate, "
                                  "eh.Tags, "
                                  "eh.Score, "
-                                 "pbv.Content AS Text "
+                                 "GROUP_CONCAT(pbv.Content, '') AS Text "
                                  "FROM PostBlockVersion pbv JOIN EditHistory eh ON eh.EventId = pbv.PostHistoryId "
                                  "WHERE pbv.PostBlockTypeId = 2 "
-                                 "UNION ALL "
-                                 "SELECT * FROM EditHistory WHERE Event = 'InitialBody';", conn,
-                                 parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+                                 "AND eh.Event = 'BodyEdit'"                            
+                                 "GROUP BY eh.EventId;", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
 
     return df_answers, df_comments, df_edits
 
