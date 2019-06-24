@@ -1,5 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
+import datetime
 
 from collections import defaultdict, OrderedDict
 from RegexPatterns import find_groups
@@ -82,7 +83,8 @@ class Processor:
                 for edit_index, edit in enumerate(sorted_edits.itertuples(), 2):
                     edit_date = getattr(edit, "CreationDate")
                     # Only look at the edit if it occurred after the comment
-                    if comment_date < edit_date:
+                    # Sometimes there is a comment related to the edit afterwards, we add a minute to account for that
+                    if comment_date <= edit_date + datetime.timedelta(minutes=1):
                         has_edits = True
 
                         # Keep a counter of which authors make an edit
@@ -166,9 +168,9 @@ class Processor:
         for value in edit_updates.values():
             total += value
         file = open("stats.txt", "w")
-        file.write("Total answers analyzed: " + str(total_answers) + "\n")
-        file.write("Total comments analyzed: " + str(total_comments) + "\n")
-        file.write("Total comments marked as Update: " + str(total_updates) + "\n")
+        file.write("Total answers analyzed             : " + str(total_answers) + "\n")
+        file.write("Total comments analyzed            : " + str(total_comments) + "\n")
+        file.write("Total comments marked as Update    : " + str(total_updates) + "\n")
         file.write("Average number of comments per edit: "
                    + str(total/len(edit_updates.keys()) if len(edit_updates.keys()) > 0 else "0"))
         file.close()
