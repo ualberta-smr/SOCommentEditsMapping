@@ -98,9 +98,8 @@ class Processor:
                         matches = self.find_matches((comment_code | comment_groups), (edit_groups ^ prev_edit_groups))
                         if len(matches) > 0:
                             total_updates += 1
-                            edit_id = getattr(edit, "EventId")
-                            edit_updates[edit_id] += 1
-                            relevant_code_matches.append((edit_id, matches))
+                            edit_updates[getattr(edit, "EventId")] += 1
+                            relevant_code_matches.append((edit_index, matches))
                     prev_edit = edit
 
                 # Check all previous commenters to see if they have a match with the found mention
@@ -188,6 +187,7 @@ class Processor:
             for match2 in set2:
                 if fuzz.ratio(match1, match2) > 80:
                     matches.add(match2)
+                    break
         return matches
 
     def process_answers(self, answer_id):
