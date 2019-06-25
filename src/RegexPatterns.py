@@ -6,7 +6,7 @@ def find_groups(text):
     patterns = [re.compile("\`([^\s]*?)\`"),
                 re.compile("[a-zA-Z][a-zA-Z0-9]+\(.*?\)"),
                 re.compile("[A-Z][a-zA-Z]+ ?<[A-Z][a-zA-Z]*>"),
-                re.compile("[a-zA-Z0-9\.]+[(][a-zA-Z_,\.]*[)]"),
+                re.compile("[_a-zA-Z0-9\.]+[(][a-zA-Z_,\.]*[)]"),
                 re.compile("([\.]?[/]?\w+\.\w+\.?\w+(?:\.\w+)*)"),
                 re.compile("[A-Za-z]+\.[A-Z]+"),
                 re.compile("(?:\s|^)([a-zA-z]{3,}\.[A-Za-z]+_[a-zA-Z_]+)"),
@@ -32,7 +32,12 @@ def find_groups(text):
                 re.compile("‘[^’]*’"),
                 re.compile("__[^_]*__"),
                 re.compile("\$[A-Za-z\_]+"),
-                re.compile("[A-Z]?[a-z]+[A-Z]+[a-z]*")]
+                re.compile("[A-Z]?[a-z]+[A-Z]+[a-z]*"),
+                re.compile("((throw new) ([_a-zA-Z0-9\.]+[(]*[a-zA-Z_,\.]*[)]*))"),
+                re.compile("((return) ([_a-zA-Z0-9\.]+[(]*[a-zA-Z_,\.]*[)]*))"),
+                re.compile("(((?:[a-zA-Z]+)\[[a-zA-Z0-9]+\]) *[a-zA-Z]+ *= *[\sa-zA-Z0-9\[\]\/\*\+\-]+)"),
+                re.compile("(((?:[a-zA-Z]+)) *[\+|\-|*|\/|\%]*= *[\sa-zA-Z0-9\[\]\/\*\+\-]+)"),
+                ]
     text = clean(text)
     return find_matches(text, patterns)
 

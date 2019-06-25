@@ -6,6 +6,7 @@ from collections import defaultdict, OrderedDict
 from RegexPatterns import find_groups
 from RegexPatterns import find_mentions
 from RegexPatterns import find_code
+from fuzzywuzzy import fuzz
 
 
 def get_tags():
@@ -67,8 +68,6 @@ class Processor:
 
                 # Get the regex groups that the comment matches
                 comment_code = find_code(comment_text)
-                # Remove the found code from the comment and run the regex to look for keywords after the replacement
-                comment_text = self.remove_code(comment_text, comment_code)
                 comment_groups = find_groups(comment_text)
                 # Keep track of which edits have relevant code (EditId, Matching Code)
                 relevant_code_matches = []
@@ -84,7 +83,7 @@ class Processor:
                     edit_date = getattr(edit, "CreationDate")
                     # Only look at the edit if it occurred after the comment
                     # Sometimes there is a comment related to the edit afterwards, we add a minute to account for that
-                    if comment_date <= edit_date + datetime.timedelta(minutes=1):
+                    if comment_date <= edit_date + datetime.timedelta(minutes=2):
                         has_edits = True
 
                         # Keep a counter of which authors make an edit
@@ -96,7 +95,7 @@ class Processor:
                         prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
                         edit_groups = find_groups(getattr(edit, "Text"))
                         # Determine if the edit has the same groups as the comment
-                        matches = (comment_code | comment_groups) & (edit_groups ^ prev_edit_groups)
+                        matches = self.find_matches((comment_code | comment_groups), (edit_groups ^ prev_edit_groups))
                         if len(matches) > 0:
                             total_updates += 1
                             edit_id = getattr(edit, "EventId")
@@ -181,6 +180,15 @@ class Processor:
             text = text.replace("`" + pattern + "`", "")
             text = text.replace("<code>" + pattern + "</code>", "")
         return text
+
+    @staticmethod
+    def find_matches(set1, set2):
+        matches = set()
+        for match1 in set1:
+            for match2 in set2:
+                if fuzz.ratio(match1, match2) > 80:
+                    matches.add(match2)
+        return matches
 
     def process_answers(self, answer_id):
         print("answer id:", answer_id)
