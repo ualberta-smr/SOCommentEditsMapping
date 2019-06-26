@@ -1,0 +1,13 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,24810414,309424,2,69565220,InitialBody,Simon Kuang,2014-07-17 17:58:02,,35,"    public static String streamToString(final InputStream inputStream){
+        try (final BufferedReader br // buffering optional
+              = new BufferedReader(new InputStreamReader(inputStream))){
+            return br.lines().parallel().collect(Collectors.joining(""\n""));
+                           // parallel optional
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+            // whatever.
+        }
+        return null;
+        // ^ if bad stuff happens.
+    }"

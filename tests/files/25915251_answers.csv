@@ -1,0 +1,2 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,25915251,25915073,2,73784273,InitialBody,Thusitha Thilina Dayaratne,2014-09-18 14:20:23,,0,"    System.getProperty(""line.separator"")    if(yourChar == '\r' || yourChar == '\r')"

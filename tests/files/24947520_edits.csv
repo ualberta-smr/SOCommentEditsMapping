@@ -1,0 +1,13 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,24947520,24947477,2,70086197,BodyEdit,Raghunandan,2014-07-25 03:30:36,,5,"    String item_list = itemList.toString();    JSONArray itemList = new JSONArray(c.getString(""item_list""));
+    // loop through the array itemList and get the items
+    for(int i=0;i<itemList.length();i++) 
+    { 
+    String item = itemsList.getString(i); // item at index i
+    }"
+1,24947520,24947477,2,70091634,BodyEdit,Raghunandan,2014-07-25 06:02:40,,5,"    String item_list = itemList.toString();    JSONArray itemList = new JSONArray(c.getString(""item_list""));
+    // loop through the array itemList and get the items
+    for(int i=0;i<itemList.length();i++) 
+    { 
+    String item = itemList.getString(i); // item at index i
+    }"

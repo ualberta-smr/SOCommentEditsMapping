@@ -1,0 +1,6 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,24947520,24947477,2,38772156,Comment,Matthew,2014-07-25 03:26:54.760,,0,What If I have a dinamic data? Not just Ascend and Descend?
+1,24947520,24947477,2,38772168,Comment,Raghunandan,2014-07-25 03:27:48.267,,0,@Matthew you still be looping through the array from 0 to end of array and use the index to get the items required
+2,24947520,24947477,2,38772735,Comment,Matthew,2014-07-25 04:04:25.540,,0,there's an error on `String item = itemsList.getString(i); // item at index i` that the itemList variable cannot be resolved.
+3,24947520,24947477,2,38773611,Comment,Raghunandan,2014-07-25 04:55:37.340,,0,"@Matthew where do you have that piece of code?. `itemList` is `JSONArray itemList = new JSONArray(c.getString(""item_list""));`"
+4,24947520,24947477,2,38775078,Comment,Matthew,2014-07-25 06:08:34.150,,1,Thanks for your help. Its done. I really appreciate it

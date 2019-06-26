@@ -1,0 +1,117 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,16184827,11227809,2,60564578,BodyEdit,atlaste,2014-03-17 10:21:13,,1197,"    for (int i=0; i<array.Length; ++i)
+       // use array[i]    // generate data
+    int arraySize = 32768;
+    int[] data = new int[arraySize];
+    Random rnd = new Random(0);
+    for (int c = 0; c < arraySize; ++c)
+        data[c] = rnd.Next(256);
+    // Too keep the spirit of the code in-tact I'll make a separate lookup table
+    // (I assume we cannot modify 'data' or the number of loops)
+    int[] lookup = new int[256];
+    for (int c = 0; c < 256; ++c)
+        lookup[c] = (c >= 128) ? c : 0;
+    // test
+    DateTime startTime = System.DateTime.Now;
+    long sum = 0;
+    for (int i = 0; i < 100000; ++i)
+    {
+        // primary loop
+        for (int j = 0; j < arraySize; ++j)
+        {
+            // here you basically want to use simple operations - so no 
+            // random branches, but things like &, |, *, -, +, etc are fine.
+            sum += lookup[data[j]];
+        }
+    }
+    DateTime endTime = System.DateTime.Now;
+    Console.WriteLine(endTime - startTime);
+    Console.WriteLine(""sum = "" + sum);
+    Console.ReadLine();"
+1,16184827,11227809,2,169114869,BodyEdit,Peter Mortensen,2018-03-16 12:59:46,,1197,"    for (int i=0; i<array.Length; ++i)
+       // Use array[i]    // Generate data
+    int arraySize = 32768;
+    int[] data = new int[arraySize];
+    Random rnd = new Random(0);
+    for (int c = 0; c < arraySize; ++c)
+        data[c] = rnd.Next(256);
+    // Too keep the spirit of the code in-tact I'll make a separate lookup table
+    // (I assume we cannot modify 'data' or the number of loops)
+    int[] lookup = new int[256];
+    for (int c = 0; c < 256; ++c)
+        lookup[c] = (c >= 128) ? c : 0;
+    // Test
+    DateTime startTime = System.DateTime.Now;
+    long sum = 0;
+    for (int i = 0; i < 100000; ++i)
+    {
+        // Primary loop
+        for (int j = 0; j < arraySize; ++j)
+        {
+            // Here you basically want to use simple operations - so no
+            // random branches, but things like &, |, *, -, +, etc. are fine.
+            sum += lookup[data[j]];
+        }
+    }
+    DateTime endTime = System.DateTime.Now;
+    Console.WriteLine(endTime - startTime);
+    Console.WriteLine(""sum = "" + sum);
+    Console.ReadLine();"
+2,16184827,11227809,2,169245178,BodyEdit,Palec,2018-03-18 16:31:09,,1197,"    for (int i=0; i<array.Length; ++i)
+       // Use array[i]    // Generate data
+    int arraySize = 32768;
+    int[] data = new int[arraySize];
+    Random rnd = new Random(0);
+    for (int c = 0; c < arraySize; ++c)
+        data[c] = rnd.Next(256);
+    // Too keep the spirit of the code in-tact I'll make a separate lookup table
+    // (I assume we cannot modify 'data' or the number of loops)
+    int[] lookup = new int[256];
+    for (int c = 0; c < 256; ++c)
+        lookup[c] = (c >= 128) ? c : 0;
+    // Test
+    DateTime startTime = System.DateTime.Now;
+    long sum = 0;
+    for (int i = 0; i < 100000; ++i)
+    {
+        // Primary loop
+        for (int j = 0; j < arraySize; ++j)
+        {
+            // Here you basically want to use simple operations - so no
+            // random branches, but things like &, |, *, -, +, etc. are fine.
+            sum += lookup[data[j]];
+        }
+    }
+    DateTime endTime = System.DateTime.Now;
+    Console.WriteLine(endTime - startTime);
+    Console.WriteLine(""sum = "" + sum);
+    Console.ReadLine();"
+3,16184827,11227809,2,170887794,BodyEdit,Saheb,2018-04-09 20:00:00,,1197,"    for (int i=0; i<array.Length; ++i)
+       // Use array[i]    // Generate data
+    int arraySize = 32768;
+    int[] data = new int[arraySize];
+    Random rnd = new Random(0);
+    for (int c = 0; c < arraySize; ++c)
+        data[c] = rnd.Next(256);
+    //To keep the spirit of the code in-tact I'll make a separate lookup table
+    // (I assume we cannot modify 'data' or the number of loops)
+    int[] lookup = new int[256];
+    for (int c = 0; c < 256; ++c)
+        lookup[c] = (c >= 128) ? c : 0;
+    // Test
+    DateTime startTime = System.DateTime.Now;
+    long sum = 0;
+    for (int i = 0; i < 100000; ++i)
+    {
+        // Primary loop
+        for (int j = 0; j < arraySize; ++j)
+        {
+            // Here you basically want to use simple operations - so no
+            // random branches, but things like &, |, *, -, +, etc. are fine.
+            sum += lookup[data[j]];
+        }
+    }
+    DateTime endTime = System.DateTime.Now;
+    Console.WriteLine(endTime - startTime);
+    Console.WriteLine(""sum = "" + sum);
+    Console.ReadLine();"

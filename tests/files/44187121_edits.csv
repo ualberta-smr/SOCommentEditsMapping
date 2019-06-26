@@ -1,0 +1,122 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,44187121,44186933,2,147918558,BodyEdit,Marvin,2017-05-25 18:48:16,,5,"    import java.time.DayOfWeek;
+    import java.time.LocalDate;
+    import java.time.format.TextStyle;
+    import java.util.Locale;
+    
+    public class WeekdayCheck {
+    
+    	public static void main(String[] args) {
+    		String weekday = ""Sunday"";
+    		int year = 2017;
+    		int occurrences = 0;
+    
+    		for (Month month : Month.values()) {
+    			LocalDate date = LocalDate.of(year, month, 1);
+    			DayOfWeek dayOfWeek = date.getDayOfWeek();
+    			if (dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals(weekday)) {
+    				occurrences++;
+    			}
+    		}
+    
+    		System.out.println(weekday + "" is the first day of a month "" + occurrences + "" times in "" + year);
+    	}
+    }"
+1,44187121,44186933,2,147918974,BodyEdit,Marvin,2017-05-25 18:56:33,,5,"    import java.time.DayOfWeek;
+    import java.time.LocalDate;
+    import java.time.format.TextStyle;
+    import java.util.Locale;
+    
+    public class WeekdayCheck {
+    
+    	public static void main(String[] args) {
+    		String weekday = ""Sunday"";
+    		int year = 2017;
+    		int occurrences = 0;
+    
+    		for (Month month : Month.values()) {
+    			LocalDate date = LocalDate.of(year, month, 1);
+    			DayOfWeek dayOfWeek = date.getDayOfWeek();
+    			if (dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals(weekday)) {
+    				occurrences++;
+    			}
+    		}
+    
+    		System.out.println(weekday + "" is the first day of a month "" + occurrences + "" times in "" + year);
+    	}
+    }    import java.time.DayOfWeek;
+    import java.time.LocalDate;
+    import java.time.Month;
+    
+    public class WeekdayCheck {
+    
+    	public static void main(String[] args) {
+    		String userInput = ""Sunday"";
+    		DayOfWeek inputDayOfWeek = toDayOfWeek(userInput);
+    		int inputYear = 2017;
+    		int occurrences = 0;
+    
+    		for (Month month : Month.values()) {
+    			LocalDate date = LocalDate.of(inputYear, month, 1);
+    			DayOfWeek dayOfWeek = date.getDayOfWeek();
+    			if (dayOfWeek == inputDayOfWeek) {
+    				occurrences++;
+    			}
+    		}
+    
+    		System.out.println(userInput + "" is the first day of a month "" + occurrences + "" times in "" + inputYear);
+    	}
+    
+    	private static DayOfWeek toDayOfWeek(String dayString) {
+    		return DayOfWeek.valueOf(dayString.toUpperCase());
+    	}
+    }"
+2,44187121,44186933,2,147919120,BodyEdit,Marvin,2017-05-25 18:59:09,,5,"    import java.time.DayOfWeek;
+    import java.time.LocalDate;
+    import java.time.format.TextStyle;
+    import java.util.Locale;
+    
+    public class WeekdayCheck {
+    
+    	public static void main(String[] args) {
+    		String weekday = ""Sunday"";
+    		int year = 2017;
+    		int occurrences = 0;
+    
+    		for (Month month : Month.values()) {
+    			LocalDate date = LocalDate.of(year, month, 1);
+    			DayOfWeek dayOfWeek = date.getDayOfWeek();
+    			if (dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH).equals(weekday)) {
+    				occurrences++;
+    			}
+    		}
+    
+    		System.out.println(weekday + "" is the first day of a month "" + occurrences + "" times in "" + year);
+    	}
+    }    import java.time.DayOfWeek;
+    import java.time.LocalDate;
+    import java.time.Month;
+    
+    public class WeekdayCheck {
+    
+    	public static void main(String[] args) {
+    		String userInput = ""Sunday"";
+    		DayOfWeek inputDayOfWeek = toDayOfWeek(userInput);
+    		int inputYear = 2017;
+    		int occurrences = 0;
+    
+    		for (Month month : Month.values()) {
+    			LocalDate date = LocalDate.of(inputYear, month, 1);
+    			DayOfWeek dayOfWeek = date.getDayOfWeek();
+    			if (dayOfWeek == inputDayOfWeek) {
+    				occurrences++;
+    			}
+    		}
+    
+    		System.out.println(userInput + "" is the first day of a month "" + occurrences + "" times in "" + inputYear);
+    	}
+    
+    	private static DayOfWeek toDayOfWeek(String dayString) {
+    		return DayOfWeek.valueOf(dayString.toUpperCase());
+    	}
+    }"

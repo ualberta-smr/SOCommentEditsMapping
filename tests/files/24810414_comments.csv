@@ -1,0 +1,8 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,24810414,309424,2,38693783,Comment,Holloway,2014-07-23 09:13:37.477,,5,Would that `return null` ever get called? Either the `br.lines...` returns or an exception is thrown.
+1,24810414,309424,2,45028007,Comment,Khaled.K,2015-02-05 10:32:11.613,,0,http://docs.oracle.com/javase/tutorial/essential/exceptions/try.html
+2,24810414,309424,2,45033996,Comment,jamp,2015-02-05 13:13:58.150,,3,"@Khaled A Khunaifer: yes, pretty sure... maybe you should have a look here: http://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html.
+What you wrongly edited is a ""try-with-resources"" statement."
+3,24810414,309424,2,47612554,Comment,robinst,2015-04-20 05:13:20.920,,10,Why do you call `parallel()` on the stream?
+4,24810414,309424,2,51895737,Comment,Lucas,2015-08-13 18:30:50.663,,3,This would not result in an _honest_ copy of the data if the source stream used windows line endings as all `\r\n` would end up getting converted into `\n`...
+5,24810414,309424,2,53502383,Comment,Steve K,2015-09-28 23:25:18.787,,1,You can use `System.lineSeparator()` to use the appropriate platform-dependent line-ending.

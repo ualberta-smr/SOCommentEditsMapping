@@ -1,0 +1,4 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,25915251,25915073,2,40565157,Comment,Javi Fernández,2014-09-18 14:25:58.977,,0,So are there only two possible characters for a line break?
+1,25915251,25915073,2,77891281,Comment,Reimeus,2017-08-02 15:38:10.390,,1,`if (yourChar == '\r' || yourChar == '\n')`....?
+2,25915251,25915073,2,94016539,Comment,Thusitha Thilina Dayaratne,2018-12-01 23:57:37.880,,0,@Reimeus my mistake :) corrected

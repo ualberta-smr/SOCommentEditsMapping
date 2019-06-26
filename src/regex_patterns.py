@@ -38,11 +38,10 @@ def find_groups(text):
                 re.compile("(((?:[a-zA-Z]+)\[[a-zA-Z0-9]+\]) *[a-zA-Z]+ *= *[\sa-zA-Z0-9\[\]\/\*\+\-]+)"),
                 re.compile("(((?:[a-zA-Z]+)) *[\+|\-|*|\/|\%]*= *[\sa-zA-Z0-9\[\]\/\*\+\-]+)"),
                 ]
-    text = clean(text)
-    return find_matches(text, patterns)
+    return find_matches(text, patterns, True)
 
 
-def clean(text):
+def clean_text(text):
     # Remove the characters http and https from the text
     pattern = re.compile("(https?:\/\/.+)")
     text = pattern.sub("", text)
@@ -52,17 +51,20 @@ def clean(text):
 
 
 # Takes a text and a list of patterns
-def find_matches(text, patterns):
+def find_matches(text, patterns, clean=False):
     matched_groups = set()
-    for pattern in patterns:
-        matches = pattern.findall(text)
-        if len(matches) > 0:
-            for index, match in enumerate(matches):
-                if type(match) == tuple:
-                    for element in match:
-                        matched_groups.add(element)
-                else:
-                    matched_groups.add(match)
+    if type(text) == str:
+        if clean:
+            text = clean_text(text)
+        for pattern in patterns:
+            matches = pattern.findall(text)
+            if len(matches) > 0:
+                for index, match in enumerate(matches):
+                    if type(match) == tuple:
+                        for element in match:
+                            matched_groups.add(element)
+                    else:
+                        matched_groups.add(match)
     return matched_groups
 
 

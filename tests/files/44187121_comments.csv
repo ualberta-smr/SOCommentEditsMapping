@@ -1,0 +1,9 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,44187121,44186933,2,75388233,Comment,KevinO,2017-05-25 18:16:37.330,,1,Using the newer approach is a good thing!
+1,44187121,44186933,2,75389161,Comment,Ole V.V.,2017-05-25 18:42:48.740,,2,Good answer. I think I’d use `for (Month month : Month.values())`. I might also require a `DayOfWeek` enum constant (or convert to one) so I avoided the `getDisplayName()` call in each iteration.
+2,44187121,44186933,2,75389309,Comment,Marvin,2017-05-25 18:47:37.060,,0,@OleV.V. Thought about using `Month` but didn't see the second `of` method until just now - will change it. The ugly `getDisplayName()` is kind of on purpose to keep it in line with the original comparison. But I agree that an enum would be the better choice.
+3,44187121,44186933,2,75389555,Comment,Ole V.V.,2017-05-25 18:56:06.833,,0,"Yes, see your point. The original code could have required or converted to `Calendar.SUNDAY` and used `cal.get(Calendar.DAY_OF_WEEK)`, but didn’t, so your code is more in line with how it did."
+4,44187121,44186933,2,75389613,Comment,Marvin,2017-05-25 18:57:42.157,,1,I've added a second approach using the enum if the string comparison was not intentional.
+5,44187121,44186933,2,75389626,Comment,Ole V.V.,2017-05-25 18:58:11.843,,1,"There’s a great coherence between the newer classes and enums. Once you get used to it, you will find it natural to expect that you can pass a `Month` to the factory methods of the other classes."
+6,44187121,44186933,2,75389647,Comment,Ole V.V.,2017-05-25 18:58:59.220,,0,Nice conversion method!
+7,44187121,44186933,2,75401499,Comment,Basil Bourque,2017-05-26 05:11:36.677,,0,"As Ole V.V. suggested, I would focus on using the [`DayOfWeek`](https://docs.oracle.com/javase/8/docs/api/java/time/DayOfWeek.html) enum rather than a string of name of day-of-week."
