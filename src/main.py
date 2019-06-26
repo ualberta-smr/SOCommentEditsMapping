@@ -82,20 +82,7 @@ def full():
     start = time.time()
 
     pipeline.process()
-    pipeline.post_process()
-    pipeline.stats()
-
-    end = time.time()
-
-    print("Took {0:2f} seconds".format(end - start))
-
-
-def post_process():
-    pipeline = Processor(None, None, None)
-
-    start = time.time()
-
-    pipeline.post_process()
+    pipeline.generate_csvs()
 
     end = time.time()
 
@@ -107,7 +94,7 @@ def stats():
 
     start = time.time()
 
-    pipeline.stats()
+    pipeline.generate_csvs()
 
     end = time.time()
 
@@ -116,14 +103,12 @@ def stats():
 
 def main():
     parser = argparse.ArgumentParser(description="SOTorrent - Comment Induced Updates")
-    parser.add_argument("--type", "-t", help="Type of Analysis: Full, Post_Process, Stats", type=str, default="full")
+    parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
 
     arg_type = parser.parse_args().type.lower()
 
     if arg_type == "full":
         full()
-    elif arg_type == "post_process":
-        post_process()
     elif arg_type == "stats":
         stats()
 
