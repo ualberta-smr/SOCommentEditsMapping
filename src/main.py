@@ -3,7 +3,7 @@ import sqlite3
 import time
 import pandas as pd
 
-from Processor import Processor
+from processor import Processor
 
 
 def setup_sqlite(conn):

@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import datetime
 
 from collections import defaultdict, OrderedDict
-from RegexPatterns import find_groups
-from RegexPatterns import find_mentions
-from RegexPatterns import find_code
+from regex_patterns import find_groups
+from regex_patterns import find_mentions
+from regex_patterns import find_code
 from fuzzywuzzy import fuzz
 
 

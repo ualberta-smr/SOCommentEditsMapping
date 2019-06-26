@@ -1,0 +1,8 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,21616398,409784,2,57438080,InitialBody,Eric Baker,2014-02-06 23:35:33,,73,"    String[] strArray = new String[] {""John"", ""Mary"", ""Bob""};
+    Arrays.asList(strArray).stream().forEach(s -> System.out.println(s));
+    /* output:
+    John
+    Mary
+    Bob
+    */"
