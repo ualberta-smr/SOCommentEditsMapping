@@ -1,0 +1,4 @@
+AnswerId,CommentId,AnswerAuthor,CommentAuthor,CommentIndex,CommentDate,Comment Score,Comment,Comment Groups,Has edits after,"Edit Groups (EditId, Matched Groups)",Edits by author,Edits by others,"Comment mentions/replies (mentioned user, comment author)"
+25915251,40565157,Thusitha Thilina Dayaratne,Javi Fernández,1,2014-09-18 14:25:58.977000,0,So are there only two possible characters for a line break?,,True,,1,0,
+25915251,77891281,Thusitha Thilina Dayaratne,Reimeus,2,2017-08-02 15:38:10.390000,1,`if (yourChar == '\r' || yourChar == '\n')`....?,"{'yourChar', ""if (yourChar == '\\r' || yourChar == '\\n')"", ' '}",True,"[(2, {""if (yourChar == '\\r' || yourChar == '\\n')""})]",1,0,
+25915251,94016539,Thusitha Thilina Dayaratne,Thusitha Thilina Dayaratne,3,2018-12-01 23:57:37.880000,0,@Reimeus my mistake :) corrected,,True,,1,0,"[('@Reimeus', 'Thusitha Thilina Dayaratne')]"

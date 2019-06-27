@@ -1,6 +1,8 @@
+import ast
 import pytest
 import pandas as pd
 import sys
+
 sys.path.append('/smr/Projects/Python/socomments/src')
 
 from processor import Processor
@@ -8,58 +10,52 @@ from processor import Processor
 
 @pytest.fixture
 def processor(request):
-    df_answers = pd.read_csv("tests/files/" + request.param + "_answers.csv", parse_dates=["CreationDate"])
-    df_comments = pd.read_csv("tests/files/" + request.param + "_comments.csv", parse_dates=["CreationDate"])
-    df_edits = pd.read_csv("tests/files/" + request.param + "_edits.csv", parse_dates=["CreationDate"])
-    return Processor(df_answers, df_comments, df_edits)
+    df_answers = pd.read_csv("tests/files/" + request.param + "/" + request.param + "_answers.csv",
+                             parse_dates=["CreationDate"])
+    df_comments = pd.read_csv("tests/files/" + request.param + "/" + request.param + "_comments.csv",
+                              parse_dates=["CreationDate"])
+    df_edits = pd.read_csv("tests/files/" + request.param + "/" + request.param + "_edits.csv",
+                           parse_dates=["CreationDate"])
+    return Processor(df_answers, df_comments, df_edits), request.param
 
 
 class TestCases:
+    @pytest.mark.parametrize("processor", ["35666",
+                                           "12521287",
+                                           "16184827",
+                                           "21616398",
+                                           "24810414",
+                                           "24947520",
+                                           "25915251",
+                                           "44187121"], indirect=True)
+    def test_validity(self, processor):
+        processor[0].process()
 
-    @pytest.mark.parametrize('processor', ['16184827'], indirect=True)
-    # Test an answer with high upvotes
-    def test1(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 1
+        stored_stats = open("tests/files/" + processor[1] + "/" + processor[1] + "_stats.txt", "r")
+        for line in stored_stats.readlines():
+            if line.split(": ")[0] == "Total comments marked as Update":
+                assert ast.literal_eval(line.split(": ")[1]) == processor.total_marked_updates
 
-    @pytest.mark.parametrize('processor', ['12521287'], indirect=True)
-    # Test an answer with low upvotes
-    def test2(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 0
+        calculated_results = pd.DataFrame(processor[0].stats,
+                                          columns=["AnswerId",
+                                                   "CommentId",
+                                                   "AnswerAuthor",
+                                                   "CommentAuthor",
+                                                   "CommentIndex",
+                                                   "CommentDate",
+                                                   "Comment Score",
+                                                   "Comment",
+                                                   "Comment Groups",
+                                                   "Has edits after",
+                                                   "Edit Groups (EditId, Matched Groups)",
+                                                   "Edits by author",
+                                                   "Edits by others",
+                                                   "Comment mentions/replies (mentioned user, comment author)"])
 
-    @pytest.mark.parametrize('processor', ['35666'], indirect=True)
-    # Test an answer with little edits and lots of comments
-    def test3(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 2
-
-    @pytest.mark.parametrize('processor', ['25915251'], indirect=True)
-    # Test an answer with little edits and lots of comments
-    def test4(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 1
-
-    @pytest.mark.parametrize('processor', ['21616398'], indirect=True)
-    # Test an answer with little edits and lots of comments
-    def test5(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 4
-
-    @pytest.mark.parametrize('processor', ['24810414'], indirect=True)
-    # Test an answer with little edits and lots of comments
-    def test6(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 1
-
-    @pytest.mark.parametrize('processor', ['24947520'], indirect=True)
-    # Test an answer with little edits and lots of comments
-    def test7(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 2
-
-    @pytest.mark.parametrize('processor', ['44187121'], indirect=True)
-    # Test an answer with little edits and lots of comments
-    def test8(self, processor):
-        processor.process()
-        assert processor.total_marked_updates == 1
+        stored_results = pd.read_csv("tests/files/" + processor[1] + "/" + processor[1] + "_results.csv",
+                                     parse_dates=["CommentDate"], na_filter=False)
+        calculated_groups = calculated_results[["Edit Groups (EditId, Matched Groups)"]]
+        stored_groups = stored_results[["Edit Groups (EditId, Matched Groups)"]]
+        for calculated_list, stored_list in zip(calculated_groups.values.tolist(), stored_groups.values.tolist()):
+            for calculated_group, stored_group in zip(calculated_list, stored_list):
+                assert calculated_group == stored_group or (calculated_group == ast.literal_eval(stored_group))

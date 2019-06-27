@@ -168,8 +168,8 @@ class Processor:
         matches = set()
         for match1 in set1:
             for match2 in set2:
-                if fuzz.ratio(match1, match2) > 80:
-                    matches.add(match2)
+                if fuzz.ratio(match1, match2) > 90:
+                    matches.add(match1)
                     break
         return matches
 
@@ -205,6 +205,7 @@ class Processor:
         ax.bar(list(edits_dist.keys()), edits_dist.values(), 0.5, color='g')
         # plt.show()
         plt.savefig('AnswersPerEdit.png')
+        plt.close()
 
         # Write statistics to text file
         file = open("stats.txt", "w")
