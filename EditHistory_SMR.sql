@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS EditHistory_MSR (
+CREATE TABLE IF NOT EXISTS EditHistory_SMR (
 	PostId INTEGER NOT NULL,
 	ParentId INTEGER,
 	PostTypeId INTEGER NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS EditHistory_MSR (
 	Text TEXT
 );
 
-INSERT INTO EditHistory_MSR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text) 
+INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
 eh.PostTypeId, 
@@ -29,7 +29,7 @@ AND pbv.PostBlockTypeId = 2
 AND eh.Event = 'InitialBody' 
 GROUP BY eh.EventId;
 
-INSERT INTO EditHistory_MSR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text) 
+INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
 eh.PostTypeId, 
@@ -51,13 +51,13 @@ AND eh.Event = 'InitialBody'
 GROUP BY eh.EventId
 ) AND Event = 'InitialBody';
 
-INSERT INTO EditHistory_MSR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text) 
+INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT *
 FROM EditHistory eh
 WHERE eh.PostTypeId = 2 
 AND eh.Event = 'Comment';
 
-INSERT INTO EditHistory_MSR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text) 
+INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
 eh.PostTypeId, 
