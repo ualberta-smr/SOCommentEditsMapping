@@ -1,0 +1,3 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,9554482,9554379,2,12109641,Comment,amit,2012-03-04 11:26:21.627,,3,Not exactly. `x=1` happens before `foo()` in `Base()`
+1,9554482,9554379,2,12109973,Comment,Daniel Lubarov,2012-03-04 12:08:01.337,,0,"@amit yes, thanks for the correction."

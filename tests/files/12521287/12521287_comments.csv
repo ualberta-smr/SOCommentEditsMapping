@@ -1,4 +1,0 @@
-,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
-0,12521287,1992970,2,16855874,Comment,Code-Apprentice,2012-09-20 21:44:21.600,,2,"`10 < x || x < 20` is equivalent to `x < 20` since all (real) numbers less than 10 are also less than 20. On the other hand, `10 < x < 20` is equivalent to `10 < x && x < 20`."
-1,12521287,1992970,2,16939456,Comment,coms,2012-09-24 21:25:44.657,,2,"This expression has a mistake, all real numbers greater than 10 and less than 20, so it is always true."
-2,12521287,1992970,2,37374246,Comment,Alessandro,2014-06-13 13:28:28.400,,2,"Should be ""&&"", not ""||""."

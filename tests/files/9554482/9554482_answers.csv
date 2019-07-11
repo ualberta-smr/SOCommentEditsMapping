@@ -1,0 +1,8 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,9554482,9554379,2,21748681,InitialBody,Daniel Lubarov,2012-03-04 11:24:39,,23,"    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"

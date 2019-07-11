@@ -1,0 +1,7 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,44880776,44880610,2,76739581,Comment,shmosel,2017-07-03 08:19:26.933,,2,The language is right in the tags.
+1,44880776,44880610,2,76739816,Comment,Arvind Sasikumar,2017-07-03 08:25:41.817,,0,"My bad, didn't notice that. There was no code in the question itself so I assumed wrong."
+2,44880776,44880610,2,76739950,Comment,Arvind Sasikumar,2017-07-03 08:29:25.653,,0,@johnfelix just copy paste it into the editor. Leave 4 spaces before you paste for the editor to understand what you are pasting is code.
+3,44880776,44880610,2,76740643,Comment,john felix,2017-07-03 08:48:00.083,,0,I already got what I want. Thank you guys for the help
+4,44880776,44880610,2,76741141,Comment,Carlos Heuberger,2017-07-03 09:01:16.470,,1,"does that really work? compile? at least this is **not Java**! e.g. `nextLine` does not take any argument, neither does `nextDouble`!! and Java is pass-by-value, I expected something like `item = keyboard.nextLine()`... and since you already toke time to edit the answer, why not delete the ""Since you haven't specified..."" part at all?"
+5,44880776,44880610,2,76743607,Comment,xenteros,2017-07-03 10:01:22.943,,0,@johnfelix how can this solve your problem?

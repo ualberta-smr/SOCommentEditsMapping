@@ -1,4 +1,0 @@
-AnswerId,CommentId,AnswerAuthor,CommentAuthor,CommentIndex,CommentDate,Comment Score,Comment,Comment Groups,Has edits after,"Edit Groups (EditId, Matched Groups)",Edits by author,Edits by others,"Comment mentions/replies (mentioned user, comment author)"
-12521287,16855874,Nakabo,Code-Apprentice,1,2012-09-20 21:44:21.600000,2,"`10 < x || x < 20` is equivalent to `x < 20` since all (real) numbers less than 10 are also less than 20. On the other hand, `10 < x < 20` is equivalent to `10 < x && x < 20`.","{'10 < x < 20', '10 < x || x < 20', 'x < 20', '10 < x && x < 20'}",True,,0,2,
-12521287,16939456,Nakabo,coms,2,2012-09-24 21:25:44.657000,2,"This expression has a mistake, all real numbers greater than 10 and less than 20, so it is always true.",,False,,0,0,
-12521287,37374246,Nakabo,Alessandro,3,2014-06-13 13:28:28.400000,2,"Should be ""&&"", not ""||"".",,False,,0,0,

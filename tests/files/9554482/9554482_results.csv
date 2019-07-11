@@ -1,0 +1,3 @@
+AnswerId,CommentId,AnswerAuthor,CommentAuthor,CommentIndex,CommentDate,Comment Score,Comment,Comment Groups,Has edits after,"Edit Groups (EditId, Matched Groups)",Edits by author,Edits by others,"Comment mentions/replies (mentioned user, comment author)"
+9554482,12109641,Daniel Lubarov,amit,1,2012-03-04 11:26:21.627000,3,Not exactly. `x=1` happens before `foo()` in `Base()`,"{'foo()', 'Base', 'x', 'x=1', 'Base()', 'Not'}",True,"[(4, {'foo()', 'Base', 'x', 'Base()'}), (6, {'Base', 'x', 'foo()', 'x=1', 'Base()'})]",11,0,
+9554482,12109973,Daniel Lubarov,Daniel Lubarov,2,2012-03-04 12:08:01.337000,0,"@amit yes, thanks for the correction.",,True,,7,0,"[('@amit', 'Daniel Lubarov')]"

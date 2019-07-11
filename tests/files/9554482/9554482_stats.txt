@@ -1,0 +1,4 @@
+Total answers analyzed             : 1
+Total comments analyzed            : 2
+Total comments marked as Update    : 1
+Average number of comments per edit: 1.0

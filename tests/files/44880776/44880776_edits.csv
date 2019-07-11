@@ -1,0 +1,41 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,44880776,44880610,2,150705753,BodyEdit,Arvind Sasikumar,2017-07-03 08:25:01,,-3,"    Scanner keyboard = new Scanner(System.in);
+    System.out.println(""Enter item name:"");
+    String item;
+    keyboard.nextLine(item);
+    System.out.println(""Original Price of item:"");
+    double originalPrice;
+    keyboard.nextDouble(originalPrice);
+    System.out.println(""Marked up percentage:"");
+    double markedUpPercentage;
+    keyboard.nextDouble(markedUpPercentage);
+    markedUpPercentage = markedUpPercentage/100; //this is what you want
+    System.out.println(""Sales tax rate:"");
+    double salesTaxRate;
+    keyboard.nextDouble(salesTaxRate);
+    salesTaxRate = salesTaxRate/100; //same thing here
+    //now output
+    System.out.println(""Item to be sold: "" + item);
+    System.out.println(""Original price of the item: "" + originalPrice);
+    System.out.println(""Price after mark up: "" + (originalPrice + originalPrice * markedUpPrice);
+    //similarly, do for sales tax"
+1,44880776,44880610,2,150708993,BodyEdit,Arvind Sasikumar,2017-07-03 09:08:01,,-3,"    Scanner keyboard = new Scanner(System.in);
+    System.out.println(""Enter item name:"");
+    String item;
+    keyboard.nextLine();
+    System.out.println(""Original Price of item:"");
+    double originalPrice;
+    keyboard.nextDouble();
+    System.out.println(""Marked up percentage:"");
+    double markedUpPercentage;
+    keyboard.nextDouble();
+    markedUpPercentage = markedUpPercentage/100; //this is what you want
+    System.out.println(""Sales tax rate:"");
+    double salesTaxRate;
+    keyboard.nextDouble();
+    salesTaxRate = salesTaxRate/100; //same thing here
+    //now output
+    System.out.println(""Item to be sold: "" + item);
+    System.out.println(""Original price of the item: "" + originalPrice);
+    System.out.println(""Price after mark up: "" + (originalPrice + originalPrice * markedUpPrice));
+    //similarly, do for sales tax"

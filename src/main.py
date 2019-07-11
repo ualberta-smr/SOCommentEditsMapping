@@ -32,10 +32,9 @@ def get_data(conn):
 
 
 def full():
-    # conn = sqlite3.connect("sotorrent.sqlite3")
-    conn = sqlite3.connect("src/test.sqlite3")
-    print("connection made")
-    # setup_sqlite(conn)
+    conn = sqlite3.connect("sotorrent.sqlite3")
+    print("Connection made")
+    setup_sqlite(conn)
     start = time.time()
     df_answers, df_comments, df_edits = get_data(conn)
     conn.close()

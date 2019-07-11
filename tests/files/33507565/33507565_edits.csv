@@ -1,0 +1,52 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,33507565,715650,2,123770842,BodyEdit,Lii,2016-07-29 15:47:04,,34,    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));
+1,33507565,715650,2,125537121,BodyEdit,Lii,2016-08-23 15:09:37,,34,    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());
+2,33507565,715650,2,125540042,BodyEdit,Lii,2016-08-23 15:44:24,,34,    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());
+3,33507565,715650,2,125585419,BodyEdit,Lii,2016-08-24 07:38:15,,34,"    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+4,33507565,715650,2,133729087,BodyEdit,Lii,2016-12-13 09:23:11,,34,"    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+5,33507565,715650,2,136214566,BodyEdit,Lii,2017-01-17 19:55:46,,34,"    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+6,33507565,715650,2,143368071,BodyEdit,Lii,2017-04-18 08:40:48,,34,"    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));    dogs.replaceAll(d -> d.clone());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+7,33507565,715650,2,143470255,BodyEdit,Lii,2017-04-19 10:57:06,,34,"    List<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toList());    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toCollection(ArrayList::new));    dogs.replaceAll(Dog::new);    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+8,33507565,715650,2,144308492,BodyEdit,Lii,2017-04-30 07:44:33,,34,"    List<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toList());    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toCollection(ArrayList::new));    dogs.replaceAll(Dog::new);    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+9,33507565,715650,2,182188549,BodyEdit,Lii,2018-09-20 19:47:29,,34,"    List<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toList());    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toCollection(ArrayList::new));    dogs.replaceAll(Dog::new);    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+10,33507565,715650,2,184478502,BodyEdit,Lii,2018-10-25 05:54:07,,34,"    List<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toList());    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toCollection(ArrayList::new));    dogs.replaceAll(Dog::new);    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"
+11,33507565,715650,2,184878335,BodyEdit,Lii,2018-10-31 08:34:58,,34,"    List<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toList());    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(Dog::new).collect(toCollection(ArrayList::new));    dogs.replaceAll(Dog::new);    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toArrayList());
+    public static <T> Collector<T, ?, ArrayList<T>> toArrayList() {
+        return Collectors.toCollection(ArrayList::new);
+    }        // Note: Method is public and returns Dog, not Object
+        @Override
+        public Dog clone() /* Note: No throws clause here */ { ...    List<Dog> clonedDogs = dogs.stream().map(Dog::clone).collect(toList());"

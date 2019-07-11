@@ -1,0 +1,209 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,9554482,9554379,2,21748871,BodyEdit,Daniel Lubarov,2012-03-04 11:37:24,,23,"    public Derived() {
+        super();
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+1,9554482,9554379,2,21748945,BodyEdit,Daniel Lubarov,2012-03-04 11:43:58,,23,"    public Derived() {
+        super();
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+2,9554482,9554379,2,21749051,BodyEdit,Daniel Lubarov,2012-03-04 11:51:09,,23,"    public Derived() {
+        super();
+    }"
+3,9554482,9554379,2,21749164,BodyEdit,Daniel Lubarov,2012-03-04 12:01:05,,23,"    public Derived() {
+        super();
+    }"
+4,9554482,9554379,2,21749245,BodyEdit,Daniel Lubarov,2012-03-04 12:07:12,,23,"    public Derived() {
+        super();
+    }    class Test
+    {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+5,9554482,9554379,2,21749375,BodyEdit,Daniel Lubarov,2012-03-04 12:15:28,,23,"    public Derived() {
+        super();
+    }    class Test
+    {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+6,9554482,9554379,2,21749627,BodyEdit,Daniel Lubarov,2012-03-04 12:29:26,,23,"    public Derived() {
+        super();
+    }    class Test
+    {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+7,9554482,9554379,2,21764023,BodyEdit,Daniel Lubarov,2012-03-05 00:23:21,,23,"    public Derived() {
+        super();
+    }    class Test
+    {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+8,9554482,9554379,2,21764887,BodyEdit,Daniel Lubarov,2012-03-05 01:20:55,,23,"    public Derived() {
+        super();
+    }    class Test {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    class Test {
+        int x;
+        {
+            x = 1;
+            x = 2;
+            x = 3;
+        }
+        Test() {
+            x = 0;
+        }
+    }    Test() {
+        // implicit call to the superclass constructor, Object.<init>()
+        super();
+        // initializer blocks, in declaration order
+        x = 1
+        x = 2
+        x = 3
+        // the explicit constructor code
+        x = 0
+    }    public Derived() {
+        super();
+        x = 2; // assigns Derived.x
+    }
+    public Base() {
+        foo();
+        x = 1; // assigns Base.x
+    }"
+9,9554482,9554379,2,21891069,BodyEdit,Daniel Lubarov,2012-03-08 01:53:07,,23,"    public Derived() {
+        super();
+    }    class Test {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    class Test {
+        int x;
+        {
+            x = 1;
+            x = 2;
+            x = 3;
+        }
+        Test() {
+            x = 0;
+        }
+    }    Test() {
+        // implicit call to the superclass constructor, Object.<init>()
+        super();
+        // initializer blocks, in declaration order
+        x = 1
+        x = 2
+        x = 3
+        // the explicit constructor code
+        x = 0
+    }    public Base() {
+        super(); // Object.<init>()
+        x = 1; // assigns Base.x
+        foo();
+    }
+    public Derived() {
+        super(); // Base.<init>()
+        x = 2; // assigns Derived.x
+    }"
+10,9554482,9554379,2,21981491,BodyEdit,Daniel Lubarov,2012-03-09 11:22:22,,23,"    public Derived() {
+        super();
+    }    class Test {
+        {x=1;}
+        int x = 2;
+        {x=3;}
+        Test() {
+            x = 0;
+        }
+    }    class Test {
+        int x;
+        {
+            x = 1;
+            x = 2;
+            x = 3;
+        }
+        Test() {
+            x = 0;
+        }
+    }    Test() {
+        // implicit call to the superclass constructor, Object.<init>()
+        super();
+        // initializer blocks, in declaration order
+        x = 1
+        x = 2
+        x = 3
+        // the explicit constructor code
+        x = 0
+    }    public Base() {
+        super(); // Object.<init>()
+        x = 1; // assigns Base.x
+        foo();
+    }
+    public Derived() {
+        super(); // Base.<init>()
+        x = 2; // assigns Derived.x
+    }"

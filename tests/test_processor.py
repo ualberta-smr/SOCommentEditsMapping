@@ -20,13 +20,15 @@ def processor(request):
 
 
 class TestCases:
-    @pytest.mark.parametrize("processor", ["35666",
-                                           "12521287",
-                                           "16184827",
+    @pytest.mark.parametrize("processor", ["16184827",
+                                           "44880776",
+                                           "35666",
+                                           "25915251",
+                                           "33507565",
+                                           "9554482",
                                            "21616398",
                                            "24810414",
                                            "24947520",
-                                           "25915251",
                                            "44187121"], indirect=True)
     def test_validity(self, processor):
         processor[0].process()

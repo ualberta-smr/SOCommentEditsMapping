@@ -1,0 +1,2 @@
+,PostId,ParentId,PostTypeId,EventId,Event,UserName,CreationDate,Tags,Score,Text
+0,33507565,715650,2,103309324,InitialBody,Lii,2015-11-03 19:36:05,,34,    List<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toList());    ArrayList<Dog> clonedDogs = dogs.stream().map(d -> d.clone()).collect(toCollection(ArrayList::new));
