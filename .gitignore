@@ -1,3 +1,8 @@
 .idea/
 venv/
 sotorrent*
+*.csv
+*.png
+*.pyc
+*.txt
+*.cache/
