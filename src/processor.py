@@ -28,6 +28,7 @@ class Processor:
         # This is to keep track of how many comments are connected to an edit that are labelled "update"
         self.comments_per_edit = defaultdict(int)
         self.edits_per_answer = dict()
+        self.comments_per_answer = dict()
 
     def process(self):
 
@@ -46,6 +47,7 @@ class Processor:
 
         comments = self.comments.loc[self.comments["PostId"] == answer_id]
         sorted_comments = comments.sort_values(by=['CreationDate'])
+        self.comments_per_answer[str(answer_id)] = comments.shape[0]
 
         # We want to preserve the ordering on the comments we see
         comment_authors = OrderedDict()
@@ -75,7 +77,7 @@ class Processor:
                     for prev_author, count in comment_authors.items():
                         # Remove the '@' in front of the name
                         if fuzz.ratio(mentioned_user[1:], prev_author) > 95:
-                            comment_replies.append((mentioned_user, comment_author))
+                            comment_replies.append((mentioned_user[1:], comment_author))
             # Handle the case where the OP makes a comment but not in reference to someone else
             elif comment_author == answer_author:
                 comment_replies.append(("N/A", comment_author))
@@ -204,7 +206,20 @@ class Processor:
         ax.set_xlabel("Number of edits")
         ax.bar(list(edits_dist.keys()), edits_dist.values(), 0.5, color='g')
         # plt.show()
-        plt.savefig('AnswersPerEdit.png')
+        plt.savefig("AnswersPerEdit.png")
+        plt.close()
+
+        # Create image of num answers per num comments distribution
+        comments_dist = defaultdict(int)
+        for value in self.comments_per_answer.values():
+            comments_dist[value] += 1
+        fig, ax = plt.subplots()
+        ax.set_title("Num of answers per num of comments")
+        ax.set_ylabel("Number of answers")
+        ax.set_xlabel("Number of comments")
+        ax.bar(list(comments_dist.keys()), comments_dist.values(), 0.5, color='g')
+        # plt.show()
+        plt.savefig("AnswersPerComment.png")
         plt.close()
 
         # Write statistics to text file

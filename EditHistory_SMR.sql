@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS EditHistory_SMR (
 	Text TEXT
 );
 
+-- find answers with code blocks
 INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
@@ -29,6 +30,7 @@ AND pbv.PostBlockTypeId = 2
 AND eh.Event = 'InitialBody' 
 GROUP BY eh.EventId;
 
+-- Create blank rows if initial body has no code blocks
 INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
@@ -51,12 +53,14 @@ AND eh.Event = 'InitialBody'
 GROUP BY eh.EventId
 ) AND Event = 'InitialBody';
 
+-- Insert comments
 INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT *
 FROM EditHistory eh
 WHERE eh.PostTypeId = 2 
 AND eh.Event = 'Comment';
 
+-- Insert code block edits
 INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
