@@ -1,6 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import datetime
+import numpy as np
 
 from collections import defaultdict, OrderedDict
 from regex_patterns import find_groups
@@ -149,8 +150,9 @@ class Processor:
                 matches = self.find_matches((comment_code | comment_groups), (edit_groups ^ prev_edit_groups))
                 if len(matches) > 0:
                     mark_as_update = True
-                    self.comments_per_edit[getattr(edit, "EventId")] += 1
-                    relevant_code_matches.append((edit_index, matches))
+                    edit_id = getattr(edit, "EventId")
+                    self.comments_per_edit[edit_id] += 1
+                    relevant_code_matches.append((edit_id, matches))
             prev_edit = edit
 
         if mark_as_update:
@@ -196,36 +198,44 @@ class Processor:
             writer.writerows(self.stats)
         f.close()
 
-        # Create image of num answers per num edits distribution
-        edits_dist = defaultdict(int)
-        for value in self.edits_per_answer.values():
-            edits_dist[value] += 1
-        fig, ax = plt.subplots()
-        ax.set_title("Num of answers per num of edits")
-        ax.set_ylabel("Number of answers")
-        ax.set_xlabel("Number of edits")
-        ax.bar(list(edits_dist.keys()), edits_dist.values(), 0.5, color='g')
-        # plt.show()
-        plt.savefig("AnswersPerEdit.png")
-        plt.close()
+        comment_edit_dist = defaultdict(int)
+        for answer in self.answers.itertuples():
+            answer_id = getattr(answer, "PostId")
+            edits = self.edits.loc[self.edits["PostId"] == answer_id]
+            comments = self.comments.loc[self.comments["PostId"] == answer_id]
+            comment_edit_dist[(edits.shape[0], comments.shape[0])] += 1
+        x = []
+        y = []
+        z = []
+        for data in comment_edit_dist.items():
+            x.append(data[0][0])
+            y.append(data[0][1])
+            z.append(data[1])
 
-        # Create image of num answers per num comments distribution
-        comments_dist = defaultdict(int)
-        for value in self.comments_per_answer.values():
-            comments_dist[value] += 1
         fig, ax = plt.subplots()
-        ax.set_title("Num of answers per num of comments")
-        ax.set_ylabel("Number of answers")
-        ax.set_xlabel("Number of comments")
-        ax.bar(list(comments_dist.keys()), comments_dist.values(), 0.5, color='g')
+        fig.set_figheight(10)
+        fig.set_figwidth(15)
+        ax.set_title("Bubble plot of edits and comments")
+        ax.set_ylabel("Number of Comments")
+        ax.set_xlabel("Number of Edits")
+        ax.scatter(x, y, s=[i * 250 for i in z], alpha=0.5)
+        ax.set_xticks(np.arange(0, 22, 2))
+        ax.set_yticks(np.arange(0, 40, 5))
+        # Taken from: https://jakevdp.github.io/PythonDataScienceHandbook/04.06-customizing-legends.html
+        # On August 21, 2019 at 13:40 MST
+        for size in [1, 2, 5]:
+            ax.scatter([], [], alpha=0.5, c="cornflowerblue", s=size * 250, label=str(size))
+        ax.legend(labelspacing=2.5, loc="best", markerfirst=False, frameon=False, title="Number of Answers")
         # plt.show()
-        plt.savefig("AnswersPerComment.png")
-        plt.close()
+        plt.savefig("BubblePlot.png")
 
         # Write statistics to text file
         file = open("stats.txt", "w")
         file.write("Total answers analyzed             : " + str(self.answers.shape[0]) + "\n")
+        file.write("Total edits analyzed               : " + str(self.edits.shape[0]) + "\n")
         file.write("Total comments analyzed            : " + str(self.comments.shape[0]) + "\n")
+        file.write("Median edits per answer            : " + str(np.median(list(self.edits_per_answer.values()))) + "\n")
+        file.write("Median comments per answer         : " + str(np.median(list(self.comments_per_answer.values()))) + "\n")
         file.write("Total comments marked as Update    : " + str(self.total_marked_updates) + "\n")
         total = 0
         for value in self.comments_per_edit.values():

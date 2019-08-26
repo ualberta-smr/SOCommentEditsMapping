@@ -1,3 +1,4 @@
+-- The where clause is to make sure we only look at posts that have a code block
 CREATE TABLE EditHistory AS
     SELECT *
     FROM (
