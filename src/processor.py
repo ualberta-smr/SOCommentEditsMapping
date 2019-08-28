@@ -166,7 +166,7 @@ class Processor:
         }
 
     # Can not simply take the intersection because sometimes the code is not exact
-    # ie. off by a space
+    # eg. off by a space
     @staticmethod
     def find_matches(set1, set2):
         matches = set()
