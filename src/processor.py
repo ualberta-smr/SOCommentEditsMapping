@@ -130,33 +130,33 @@ class Processor:
         relevant_code_matches = []
         # The answer is the initial body of the answer
         prev_edit = answer
-        # We start the index from two so it is easier to compare with the stack overflow revision page
-        for edit_index, edit in enumerate(sorted_edits.itertuples(), 2):
-            edit_date = getattr(edit, "CreationDate")
-            # Only look at the edit if it occurred after the comment
-            # Somtimes the edit occurs before the related comment
-            # We add 1 minute + 1 minute buffer to account for that
-            if comment_date <= edit_date + datetime.timedelta(minutes=2):
-                has_edits = True
-                # Keep a counter of which authors make an edit
-                if getattr(edit, "UserName") == answer_author:
-                    edits_by_author += 1
-                else:
-                    edits_by_others += 1
+        if len(comment_code | comment_groups) != 0:
+            # We start the index from two so it is easier to compare with the stack overflow revision page
+            for edit_index, edit in enumerate(sorted_edits.itertuples(), 2):
+                edit_date = getattr(edit, "CreationDate")
+                # Only look at the edit if it occurred strictly after the comment
+                if comment_date < edit_date:
+                    has_edits = True
+                    # Keep a counter of which authors make an edit
+                    if getattr(edit, "UserName") == answer_author:
+                        edits_by_author += 1
+                    else:
+                        edits_by_others += 1
 
-                prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
-                edit_groups = find_groups(getattr(edit, "Text"))
-                # Determine if the edit has the same groups as the comment
-                matches = self.find_matches((comment_code | comment_groups), (edit_groups ^ prev_edit_groups))
-                if len(matches) > 0:
-                    mark_as_update = True
-                    edit_id = getattr(edit, "EventId")
-                    self.comments_per_edit[edit_id] += 1
-                    relevant_code_matches.append((edit_id, matches))
-            prev_edit = edit
+                    prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
+                    edit_groups = find_groups(getattr(edit, "Text"))
+                    # Determine if the edit has the same groups as the comment
+                    matches = self.find_matches((comment_code | comment_groups), (edit_groups ^ prev_edit_groups))
+                    if len(matches) > 0:
+                        mark_as_update = True
+                        edit_id = getattr(edit, "EventId")
+                        self.comments_per_edit[edit_id] += 1
+                        relevant_code_matches.append((edit_id, matches))
+                        break
+                prev_edit = edit
 
-        if mark_as_update:
-            self.total_marked_updates += 1
+            if mark_as_update:
+                self.total_marked_updates += 1
 
         return {
             "has_edits": has_edits,
@@ -213,14 +213,14 @@ class Processor:
             z.append(data[1])
 
         fig, ax = plt.subplots()
-        fig.set_figheight(10)
-        fig.set_figwidth(15)
+        # fig.set_figheight(10)
+        # fig.set_figwidth(15)
         ax.set_title("Bubble plot of edits and comments")
         ax.set_ylabel("Number of Comments")
         ax.set_xlabel("Number of Edits")
         ax.scatter(x, y, s=[i * 250 for i in z], alpha=0.5)
-        ax.set_xticks(np.arange(0, 22, 2))
-        ax.set_yticks(np.arange(0, 40, 5))
+        # ax.set_xticks(np.arange(0, 22, 2))
+        # ax.set_yticks(np.arange(0, 40, 5))
         # Taken from: https://jakevdp.github.io/PythonDataScienceHandbook/04.06-customizing-legends.html
         # On August 21, 2019 at 13:40 MST
         for size in [1, 2, 5]:
