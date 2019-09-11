@@ -1,7 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
-import datetime
 import numpy as np
+import pandas as pd
 
 from collections import defaultdict, OrderedDict
 from regex_patterns import find_groups
@@ -19,7 +19,8 @@ def get_tags():
 
 class Processor:
 
-    def __init__(self, df_answers, df_comments, df_edits):
+    def __init__(self, db_conn, df_answers, df_comments, df_edits):
+        self.conn = db_conn
         self.answers = df_answers
         self.comments = df_comments
         self.edits = df_edits
@@ -132,7 +133,7 @@ class Processor:
         prev_edit = answer
         if len(comment_code | comment_groups) != 0:
             # We start the index from two so it is easier to compare with the stack overflow revision page
-            for edit_index, edit in enumerate(sorted_edits.itertuples(), 2):
+            for _, edit in enumerate(sorted_edits.itertuples(), 2):
                 edit_date = getattr(edit, "CreationDate")
                 # Only look at the edit if it occurred strictly after the comment
                 if comment_date < edit_date:
@@ -151,6 +152,12 @@ class Processor:
                         mark_as_update = True
                         edit_id = getattr(edit, "EventId")
                         self.comments_per_edit[edit_id] += 1
+                        # Uncomment this code if running sqlite3 V3.25 or higher
+                        # query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
+                        # edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+                        # edit_row = edit_ids.loc[edit_ids["EventId"] == edit_id]
+                        # edit_index = getattr(edit_row, "RowNum")
+                        # relevant_code_matches.append((edit_index, matches))
                         relevant_code_matches.append((edit_id, matches))
                         break
                 prev_edit = edit

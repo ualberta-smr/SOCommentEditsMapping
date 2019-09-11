@@ -37,11 +37,10 @@ def full():
     setup_sqlite(conn)
     start = time.time()
     df_answers, df_comments, df_edits = get_data(conn)
-    conn.close()
     end = time.time()
     print("Data loading took {0:2f} seconds".format(end - start))
 
-    pipeline = Processor(df_answers, df_comments, df_edits)
+    pipeline = Processor(conn, df_answers, df_comments, df_edits)
 
     start = time.time()
 
@@ -49,7 +48,7 @@ def full():
     pipeline.generate_csvs()
 
     end = time.time()
-
+    conn.close()
     print("Took {0:2f} seconds".format(end - start))
 
 
