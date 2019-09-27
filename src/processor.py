@@ -129,6 +129,8 @@ class Processor:
 
         # Keep track of which edits have a code match (Edit Index, Code)
         relevant_code_matches = []
+        # Keep track of the edit indices
+        edit_indices = []
         # The answer is the initial body of the answer
         prev_edit = answer
         if len(comment_code | comment_groups) != 0:
@@ -158,7 +160,9 @@ class Processor:
                         # for edit_row in edit_ids.itertuples():
                         #     if getattr(edit_row, "EventId") == edit_id:
                         #         edit_index = getattr(edit_row, "RowNum")
+                        #         break
                         # relevant_code_matches.append((edit_index, matches))
+                        # edit_indices.append(edit_index)
                         relevant_code_matches.append((edit_id, matches))
                         break
                 prev_edit = edit
