@@ -19,6 +19,13 @@ def setup_sqlite(conn):
     create_smr_tables.close()
     c.executescript(script)
     conn.commit()
+
+    create_results = open("Results.sql", "r")
+    script = create_results.read()
+    create_results.close()
+    c.executescript(script)
+    conn.commit()
+
     c.close()
 
 
@@ -45,7 +52,7 @@ def full():
     start = time.time()
 
     pipeline.process()
-    pipeline.generate_csvs()
+    pipeline.generate_result_stats()
 
     end = time.time()
     conn.close()
@@ -57,7 +64,7 @@ def stats():
 
     start = time.time()
 
-    pipeline.generate_csvs()
+    pipeline.generate_result_stats()
 
     end = time.time()
 

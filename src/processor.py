@@ -8,6 +8,7 @@ from regex_patterns import find_groups
 from regex_patterns import find_mentions
 from regex_patterns import find_code
 from fuzzywuzzy import fuzz
+from statistics import mean
 
 
 def get_tags():
@@ -16,6 +17,16 @@ def get_tags():
 
     return tags
 
+# The tags argument is a string containing the tags on a question
+def find_tags(tags):
+    # These are the tags specified in the tag config
+    tags_config = get_tags()
+    found_tags = []
+    for tag in tags_config:
+        # If the Tags on the question match a tag in the config then append it
+        if tags.contain(tag):
+            found_tags.append(tag)
+    return found_tags
 
 class Processor:
 
@@ -73,9 +84,6 @@ class Processor:
             user_mentions = find_mentions(comment_text)
             if len(user_mentions) > 0:
                 for mentioned_user in user_mentions:
-                    # TODO: Will find matches with previous comments by same user as well even if already addressed
-                    # ie. User1, User2, User1, User3, User4. This will match User4 to both instances of User1,
-                    # even if it was only addressing the second instance
                     for prev_author, count in comment_authors.items():
                         # Remove the '@' in front of the name
                         if fuzz.ratio(mentioned_user[1:], prev_author) > 95:
@@ -258,7 +266,57 @@ class Processor:
         file.close()
 
     # Generate different CSVs based on Tag
-    def generate_csvs(self):
+    def generate_result_stats(self):
+        results = pd.read_csv('results.csv')
+        results.to_sql("Results", self.conn, if_exists="replace", index=False)
+
+        data = pd.read_sql_query('SELECT eh4.UserName AS QuestionAuthor, '
+                                 'eh3.UserName AS AnswerAuthor, '
+                                 'eh1.UserName AS CommentAuthor, '
+                                 'eh2.UserName AS EditAuthor, '
+                                 'eh1.CreationDate AS CommentDate, '
+                                 'eh2.CreationDate AS EditDate, '
+                                 'eh3.Score '
+                                 'eh4.Tags '
+                                 'FROM Results r '
+                                 'LEFT JOIN EditHistory eh1 ON r.AnswerId = eh1.PostId AND eh1.EventId = r.CommentId '
+                                 'LEFT JOIN EditHistory eh2 ON r.AnswerId = eh2.PostId AND eh2.EditId = r.EditId '
+                                 'LEFT JOIN EditHistory eh3 ON r.AnswerId = eh3.PostId AND eh3.Event = "InitialBody" '
+                                 'LEFT JOIN EditHistory eh4 ON eh4.PostId = eh3.ParentId;',
+                                 self.conn,
+                                 parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+
         tags = get_tags()
+        tag_dict = {}
         for tag in tags:
-            pass
+            tag_dict[tag] = {}
+
+        # If an answer is tagged with multiple tags found in the tags config
+        # Then it will count for both tags
+        for row in data.itertuples():
+            tags = find_tags(getattr(row, "Tags"))
+            for tag in tags:
+                if getattr(row, "CommentAuthor") == getattr(row, "EditAuthor"):
+                    tag_dict[tag]["commentor_editor_same"] += 1
+                else:
+                    tag_dict[tag]["commentor_editor_different"] += 1
+
+                tag_dict[tag]["response_times"].append(getattr(row, "EditDate") - getattr(row, "CommentDate"))
+
+                if getattr(row, "Score") < 0:
+                    tag_dict[tag]["num_bad_answers"] += 1
+                else:
+                    tag_dict[tag]["num_good_answers"] += 1
+        
+        for tag in tag_dict.keys():
+            tag_dict[tag]["average_response_time"] = mean(tag_dict[tag]["response_times"])
+
+        file = open("result_stats.txt", "w")
+        for tag in tag_dict.keys():
+            file.write("Tag                      : " + tag)
+            file.write("Comment/Editor Different : " + str(tag_dict[tag]["commentor_editor_different"]) + "\n")
+            file.write("Comment/Editor Same      : " + str(tag_dict[tag]["commentor_editor_same"]) + "\n")
+            file.write("Average Response Time    : " + str(tag_dict[tag]["average_response_time"]) + "\n")
+            file.write("Num Good Answers         : " + str(tag_dict[tag]["num_good_answers"]) + "\n")
+            file.write("Num Bad Answers          : " + str(tag_dict[tag]["num_bad_answers"]) + "\n")
+        file.close()
