@@ -99,6 +99,7 @@ class Processor:
                               comment_groups if len(comment_groups) > 0 else "",
                               comment_results["has_edits"],
                               comment_results["relevant_code_matches"] if len(comment_results["relevant_code_matches"]) > 0 else "",
+                              comment_results["edit_id"],
                               comment_results["edits_by_author"],
                               comment_results["edits_by_others"],
                               comment_replies if len(comment_replies) > 0 else ""])
@@ -129,6 +130,7 @@ class Processor:
 
         # Keep track of which edits have a code match (Edit Index, Code)
         relevant_code_matches = []
+        edit_id = None
         # The answer is the initial body of the answer
         prev_edit = answer
         if len(comment_code | comment_groups) != 0:
@@ -170,7 +172,7 @@ class Processor:
         return {
             "has_edits": has_edits,
             "relevant_code_matches": relevant_code_matches,
-            "edit_id": edit_id
+            "edit_id": edit_id,
             "edits_by_author": edits_by_author,
             "edits_by_others": edits_by_others
         }
@@ -202,6 +204,7 @@ class Processor:
                              "Comment Groups",
                              "Has edits after",
                              "Edit Groups (EditId, Matched Groups)",
+                             "EditId",
                              "Edits by author",
                              "Edits by others",
                              "Comment mentions/replies (mentioned user, comment author)"])
