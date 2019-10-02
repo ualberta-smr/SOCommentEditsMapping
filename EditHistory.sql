@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS EditHistory;
 -- The where clause is to make sure we only look at posts that have a code block
 CREATE TABLE EditHistory AS
     SELECT *
@@ -39,5 +40,5 @@ CREATE TABLE EditHistory AS
         WHERE p.Id IN (SELECT DISTINCT pbv.PostId FROM PostBlockVersion pbv WHERE PostBlockTypeId = 2)
     ) AS EditHistory;
 
-    CREATE INDEX EditHistoryPostIdIndex ON EditHistory(PostId);
-    CREATE INDEX EditHistoryEventIdIndex ON EditHistory(EventId);
+CREATE INDEX EditHistoryPostIdIndex ON EditHistory(PostId);
+CREATE INDEX EditHistoryEventIdIndex ON EditHistory(EventId);

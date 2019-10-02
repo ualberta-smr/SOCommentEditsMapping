@@ -39,10 +39,11 @@ def get_data(conn):
     return df_questions, df_answers, df_comments, df_edits
 
 
-def full():
+def full(clean):
     conn = sqlite3.connect("sotorrent.sqlite3")
     print("Connection made")
-    setup_sqlite(conn)
+    if clean:
+        setup_sqlite(conn)
     start = time.time()
     df_questions, df_answers, df_comments, df_edits = get_data(conn)
     end = time.time()
@@ -75,11 +76,13 @@ def stats():
 def main():
     parser = argparse.ArgumentParser(description="SOTorrent - Comment Induced Updates")
     parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
+    parser.add_argument("--clean", "-c", help="Make SQL Tables", type=str, default="t")
 
     arg_type = parser.parse_args().type.lower()
 
     if arg_type == "full":
-        full()
+        arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
+        full(arg_clean)
     elif arg_type == "stats":
         stats()
 

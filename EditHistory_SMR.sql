@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS EditHistory_SMR (
+DROP TABLE IF EXISTS EditHistory_SMR;
+CREATE TABLE EditHistory_SMR (
 	PostId INTEGER NOT NULL,
 	ParentId INTEGER,
 	PostTypeId INTEGER NOT NULL,
@@ -10,6 +11,8 @@ CREATE TABLE IF NOT EXISTS EditHistory_SMR (
 	Score INTEGER,
 	Text TEXT
 );
+CREATE INDEX EditHistory_SMRPostIdIndex ON EditHistory_SMR(PostId);
+CREATE INDEX EditHistory_SMREventIdIndex ON EditHistory_SMR(EventId);
 
 -- find answers with code blocks
 INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
