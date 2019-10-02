@@ -18,7 +18,7 @@ CREATE TABLE EditHistory AS
           ph.Text AS Text
         FROM PostVersion pv
         JOIN PostHistory ph ON pv.PostHistoryId = ph.Id
-        JOIN Users u ON ph.UserId = u.Id
+        LEFT JOIN Users u ON ph.UserId = u.Id
         JOIN Posts p ON pv.PostId = p.Id
         WHERE p.Id IN (SELECT DISTINCT pbv.PostId FROM PostBlockVersion pbv WHERE PostBlockTypeId = 2)
         UNION ALL
@@ -35,7 +35,7 @@ CREATE TABLE EditHistory AS
           c.Text AS Text
         FROM Comments c
         JOIN Posts p ON c.PostId = p.Id
-        JOIN Users u ON c.UserId = u.Id
+        LEFT JOIN Users u ON c.UserId = u.Id
         WHERE p.Id IN (SELECT DISTINCT pbv.PostId FROM PostBlockVersion pbv WHERE PostBlockTypeId = 2)
     ) AS EditHistory;
 

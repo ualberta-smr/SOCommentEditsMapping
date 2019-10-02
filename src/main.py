@@ -34,8 +34,9 @@ def get_data(conn):
     df_answers = pd.read_sql_query("SELECT * FROM EditHistory_SMR WHERE Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_comments = pd.read_sql_query("SELECT * FROM EditHistory_SMR WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_edits = pd.read_sql_query("SELECT * FROM EditHistory_SMR WHERE Event = 'BodyEdit';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_questions = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' AND PostId IN (SELECT DISTINCT ParentId FROM EditHistory WHERE PostId IN (SELECT PostId from EditHistory_SMR));", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
 
-    return df_answers, df_comments, df_edits
+    return df_questions, df_answers, df_comments, df_edits
 
 
 def full():
@@ -43,11 +44,11 @@ def full():
     print("Connection made")
     setup_sqlite(conn)
     start = time.time()
-    df_answers, df_comments, df_edits = get_data(conn)
+    df_questions, df_answers, df_comments, df_edits = get_data(conn)
     end = time.time()
     print("Data loading took {0:2f} seconds".format(end - start))
 
-    pipeline = Processor(conn, df_answers, df_comments, df_edits)
+    pipeline = Processor(conn, df_questions, df_answers, df_comments, df_edits)
 
     start = time.time()
 
@@ -60,7 +61,7 @@ def full():
 
 
 def stats():
-    pipeline = Processor(None, None, None)
+    pipeline = Processor(None, None, None, None, None)
 
     start = time.time()
 
