@@ -3,6 +3,7 @@ import sqlite3
 import time
 import pandas as pd
 
+from generate import generate_result_stats, generate_simple_csvs
 from processor import Processor
 
 
@@ -54,23 +55,25 @@ def full(clean):
     start = time.time()
 
     pipeline.process()
-    pipeline.generate_result_stats()
 
     end = time.time()
+
+    # Generate the statistics
+    stats()
+
     conn.close()
-    print("Took {0:2f} seconds".format(end - start))
+    print("Took {0:2f} seconds to process".format(end - start))
 
 
 def stats():
-    pipeline = Processor(None, None, None, None, None)
-
     start = time.time()
 
-    pipeline.generate_result_stats()
+    generate_result_stats()
+    generate_simple_csvs()
 
     end = time.time()
 
-    print("Took {0:2f} seconds".format(end - start))
+    print("Took {0:2f} seconds to generate files".format(end - start))
 
 
 def main():
