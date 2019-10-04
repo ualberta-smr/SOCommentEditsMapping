@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+import matplotlib.pyplot as plt
 
 
 def get_tags():
@@ -47,19 +48,19 @@ def generate_result_stats():
         tags = find_tags(getattr(row, "Tags"))
         for tag in tags:
             # Check to see how many times the commenter is the same as the editor
-            if getattr(row, "CommentAuthor") == getattr(row, "EditAuthor"):
+            if getattr(row, "CommentAuthor").strip() == getattr(row, "EditAuthor").strip():
                 tag_dict[tag]["commenter_editor_same"] += 1
             else:
                 tag_dict[tag]["commenter_editor_different"] += 1
 
             # Count how many times the editor is the same as the answer author
-            if getattr(row, "AnswerAuthor") == getattr(row, "EditAuthor"):
+            if getattr(row, "AnswerAuthor").strip() == getattr(row, "EditAuthor").strip():
                 tag_dict[tag]["answer_editor_same"] += 1
             else:
                 tag_dict[tag]["answer_editor_different"] += 1
 
             # Count how many times the Questioner is the same as the commenter
-            if getattr(row, "QuestionAuthor") == getattr(row, "CommentAuthor"):
+            if getattr(row, "QuestionAuthor").strip() == getattr(row, "CommentAuthor").strip():
                 tag_dict[tag]["question_commenter_same"] += 1
             else:
                 tag_dict[tag]["question_commenter_different"] += 1
@@ -92,6 +93,14 @@ def generate_result_stats():
         file.write("Num Bad Answers                 : " + str(tag_dict[tag]["num_bad_answers"]) + "\n")
         file.write("\n")
     file.close()
+
+    fig, ax = plt.subplots()
+    ax.set_title("Distribution of Answer Scores")
+    ax.set_ylabel("Number of Answers")
+    ax.set_xlabel("Answer Score")
+    ax.hist(data['AnswerScore'].tolist())
+    # plt.show()
+    plt.savefig("AnswerDistribution.png")
 
 
 def generate_simple_csvs():
