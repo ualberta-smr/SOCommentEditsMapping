@@ -51,18 +51,14 @@ def full(clean):
     print("Data loading took {0:2f} seconds".format(end - start))
 
     pipeline = Processor(conn, df_questions, df_answers, df_comments, df_edits)
-
     start = time.time()
-
     pipeline.process()
-
     end = time.time()
+    conn.close()
+    print("Took {0:2f} seconds to process".format(end - start))
 
     # Generate the statistics
     stats()
-
-    conn.close()
-    print("Took {0:2f} seconds to process".format(end - start))
 
 
 def stats():

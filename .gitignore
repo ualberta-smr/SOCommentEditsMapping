@@ -6,3 +6,4 @@ sotorrent*
 *.pyc
 *.txt
 *.cache/
+*.log

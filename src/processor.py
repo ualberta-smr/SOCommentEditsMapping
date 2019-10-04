@@ -157,11 +157,7 @@ class Processor:
                         # Uncomment this code if running sqlite3 V3.25 or higher
                         # query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
                         # edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-                        # edit_index = edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False)
-                        # for edit_row in edit_ids.itertuples():
-                        #     if getattr(edit_row, "EventId") == edit_id:
-                        #         edit_index = getattr(edit_row, "RowNum")
-                        #         break
+                        # edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
                         # relevant_code_matches.append((edit_index, matches))
                         relevant_code_matches.append((edit_id, matches))
                         break
