@@ -233,7 +233,7 @@ class Processor:
         fig, ax = plt.subplots()
         # fig.set_figheight(10)
         # fig.set_figwidth(15)
-        ax.set_title("Bubble plot of edits and comments")
+        # ax.set_title("Bubble plot of edits and comments")
         ax.set_ylabel("Number of Comments")
         ax.set_xlabel("Number of Edits")
         ax.scatter(x, y, s=[i * 250 for i in z], alpha=0.5)

@@ -95,7 +95,7 @@ def generate_result_stats():
     file.close()
 
     fig, ax = plt.subplots()
-    ax.set_title("Distribution of Answer Scores")
+    # ax.set_title("Distribution of Answer Scores")
     ax.set_ylabel("Number of Answers")
     ax.set_xlabel("Answer Score")
     ax.hist(data['AnswerScore'].tolist())
