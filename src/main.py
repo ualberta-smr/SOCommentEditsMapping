@@ -75,7 +75,7 @@ def stats():
 def main():
     parser = argparse.ArgumentParser(description="SOTorrent - Comment Induced Updates")
     parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
-    parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="f")
+    parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="t")
 
     arg_type = parser.parse_args().type.lower()
 
