@@ -9,13 +9,13 @@ from processor import Processor
 
 def setup_sqlite(conn):
     c = conn.cursor()
-    create_edit_history = open("EditHistory.sql", "r")
+    create_edit_history = open("sql/EditHistory.sql", "r")
     script = create_edit_history.read()
     create_edit_history.close()
     c.executescript(script)
     conn.commit()
 
-    create_smr_tables = open("EditHistory_SMR.sql", "r")
+    create_smr_tables = open("sql/EditHistory_SMR.sql", "r")
     script = create_smr_tables.read()
     create_smr_tables.close()
     c.executescript(script)
