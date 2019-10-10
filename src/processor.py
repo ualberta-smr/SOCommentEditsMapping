@@ -1,6 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from collections import defaultdict, OrderedDict
 from regex_patterns import find_groups
