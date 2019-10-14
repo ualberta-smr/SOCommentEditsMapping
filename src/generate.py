@@ -39,7 +39,8 @@ def generate_result_stats():
             "question_commenter_different": 0,
             "response_times": [],
             "num_bad_answers": 0,
-            "num_good_answers": 0
+            "num_good_answers": 0,
+            "scores": []
         }
 
     # If an answer is tagged with multiple tags found in the tags config
@@ -72,6 +73,8 @@ def generate_result_stats():
             else:
                 tag_dict[tag]["num_good_answers"] += 1
 
+            tag_dict[tag]["scores"].append(getattr(row, "AnswerScore"))
+
     for tag in tag_dict.keys():
         if not tag_dict[tag]["response_times"]:
             tag_dict[tag]["average_response_time"] = pd.NaT
@@ -91,6 +94,7 @@ def generate_result_stats():
         file.write("Average Response Time           : " + str(tag_dict[tag]["average_response_time"]) + "\n")
         file.write("Num Good Answers                : " + str(tag_dict[tag]["num_good_answers"]) + "\n")
         file.write("Num Bad Answers                 : " + str(tag_dict[tag]["num_bad_answers"]) + "\n")
+        file.write("Average Answer Score            : " + str(sum(tag_dict[tag]["scores"]) / len(tag_dict[tag]["scores"]) if len(tag_dict[tag]["scores"]) else "") + "\n")
         file.write("\n")
     file.close()
 
