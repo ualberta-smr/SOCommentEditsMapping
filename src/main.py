@@ -21,7 +21,7 @@ def setup_sqlite(conn):
     c.executescript(script)
     conn.commit()
 
-    create_results = open("Results.sql", "r")
+    create_results = open("sql/Results.sql", "r")
     script = create_results.read()
     create_results.close()
     c.executescript(script)
