@@ -3,7 +3,7 @@ import sqlite3
 import time
 import pandas as pd
 
-from generate import generate_result_stats, generate_simple_csvs
+from generate import generate_result_stats, generate_simple_csvs, generate_stat_csv
 from processor import Processor
 
 
@@ -60,6 +60,7 @@ def stats():
 
     generate_result_stats()
     generate_simple_csvs()
+    # generate_stat_csv()
 
     end = time.time()
 

@@ -1,3 +1,5 @@
+import csv
+
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
@@ -125,3 +127,40 @@ def generate_simple_csvs():
                                   "EditId"
                                   ]]
         data_to_write.to_csv(path_or_buf='results_' + tag[1:-1] + '.csv', index=False)
+
+
+def generate_stat_csv():
+    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"])
+    data = data.loc[pd.isnull(data["EditGroups(EditId,MatchedGroups)"]) == False]
+
+    with open("test.csv", "w", newline='') as file:
+        wr = csv.writer(file, quoting=csv.QUOTE_ALL)
+        wr.writerow(["QuestionId",
+                     "AnswerId",
+                     "CommentId",
+                     "Commenter/Editor Same",
+                     "Answerer/Editory Same",
+                     "Questioner/Commenter Same",
+                     "Answer Score",
+                     "Edit Date",
+                     "Comment Date",
+                     "Response Time"])
+        for row in data.itertuples():
+            item = [getattr(row, "QuestionId"), getattr(row, "AnswerId"), getattr(row, "CommentId")]
+            if str(getattr(row, "CommentAuthor")).strip() == str(getattr(row, "EditAuthor")).strip():
+                item.append(1)
+            else:
+                item.append(0)
+            if str(getattr(row, "AnswerAuthor")).strip() == str(getattr(row, "EditAuthor")).strip():
+                item.append(1)
+            else:
+                item.append(0)
+            if str(getattr(row, "QuestionAuthor")).strip() == str(getattr(row, "CommentAuthor")).strip():
+                item.append(1)
+            else:
+                item.append(0)
+            item.append(getattr(row, "AnswerScore"))
+            item.append(getattr(row, "EditDate"))
+            item.append(getattr(row, "CommentDate"))
+            item.append(getattr(row, "EditDate") - getattr(row, "CommentDate"))
+            wr.writerow(item)
