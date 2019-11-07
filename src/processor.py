@@ -11,12 +11,13 @@ from fuzzywuzzy import fuzz
 
 
 class Processor:
-    def __init__(self, db_conn, df_questions, df_answers, df_comments, df_edits):
+    def __init__(self, db_conn, df_questions, df_answers, df_comments, df_edits, filter_user):
         self.conn = db_conn
         self.questions = df_questions
         self.answers = df_answers
         self.comments = df_comments
         self.edits = df_edits
+        self.filter_user = filter_user
 
         self.stats = []
         self.total_marked_updates = 0
@@ -38,7 +39,7 @@ class Processor:
     def process_comments(self, answer):
 
         answer_id = getattr(answer, "PostId")
-        answer_author = getattr(answer, "UserName")
+        answer_author = str(getattr(answer, "UserName")).strip()
 
         comments = self.comments.loc[self.comments["PostId"] == answer_id]
         sorted_comments = comments.sort_values(by=['CreationDate'])
@@ -49,7 +50,7 @@ class Processor:
 
         for comment_index, comment in enumerate(sorted_comments.itertuples(), 1):
             # Keep track of comment authors and their position
-            comment_author = getattr(comment, "UserName")
+            comment_author = str(getattr(comment, "UserName")).strip()
             if comment_author in comment_authors:
                 comment_authors[comment_author] += 1
             else:
@@ -104,7 +105,7 @@ class Processor:
     def process_edits(self, answer, comment):
 
         answer_id = getattr(answer, "PostId")
-        answer_author = getattr(answer, "UserName")
+        answer_author = str(getattr(answer, "UserName")).strip()
 
         edits = self.edits.loc[self.edits["PostId"] == answer_id]
         sorted_edits = edits.sort_values(by=['CreationDate'])
@@ -112,6 +113,7 @@ class Processor:
 
         comment_date = getattr(comment, "CreationDate")
         comment_text = getattr(comment, "Text")
+        comment_author = str(getattr(comment, "UserName")).strip()
         # Get the regex groups that the comment matches
         comment_code = find_code(comment_text)
         comment_groups = find_groups(comment_text)
@@ -136,14 +138,19 @@ class Processor:
             # We start the index from two so it is easier to compare with the stack overflow revision page
             for _, edit in enumerate(sorted_edits.itertuples(), 2):
                 edit_date = getattr(edit, "CreationDate")
+                edit_author = str(getattr(edit, "UserName")).strip()
                 # Only look at the edit if it occurred strictly after the comment
                 if comment_date < edit_date:
                     has_edits = True
                     # Keep a counter of which authors make an edit
-                    if getattr(edit, "UserName") == answer_author:
+                    if edit_author == answer_author:
                         edits_by_author += 1
                     else:
                         edits_by_others += 1
+
+                    # If we are filtering users and the comment author and edit author are the same then skip this edit
+                    if self.filter_user and comment_author == edit_author:
+                        continue
 
                     prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
                     edit_groups = find_groups(getattr(edit, "Text"))
@@ -152,7 +159,6 @@ class Processor:
                     if len(matches) > 0:
                         mark_as_update = True
                         edit_id = getattr(edit, "EventId")
-                        edit_author = getattr(edit, "UserName")
                         edit_date = getattr(edit, "CreationDate")
                         self.comments_per_edit[edit_id] += 1
                         # Uncomment this code if running sqlite3 V3.25 or higher
