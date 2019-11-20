@@ -133,7 +133,7 @@ def generate_stat_csv():
     data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"])
     data = data.loc[pd.isnull(data["EditGroups(EditId,MatchedGroups)"]) == False]
 
-    with open("test.csv", "w", newline='') as file:
+    with open("cat_stats.csv", "w", newline='') as file:
         wr = csv.writer(file, quoting=csv.QUOTE_ALL)
         wr.writerow(["QuestionId",
                      "AnswerId",

@@ -5,7 +5,7 @@ CREATE TABLE EditHistory_SMR (
 	PostTypeId INTEGER NOT NULL,
 	EventId INTEGER NOT NULL,
 	Event TEXT NOT NULL,
-	UserName TEXT NOT NULL,
+	UserName TEXT,
 	CreationDate TEXT NOT NULL,
 	Tags TEXT,
 	Score INTEGER,
