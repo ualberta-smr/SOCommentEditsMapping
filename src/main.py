@@ -71,13 +71,13 @@ def main():
     parser = argparse.ArgumentParser(description="SOTorrent - Comment Induced Updates")
     parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
     parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="t")
-    parser.add_argument("--user", "-f", help="Allow commenters to also be editors: True, False", type=str, default="f")
+    parser.add_argument("--user", "-f", help="Allow commenters to also be editors: True, False", type=str, default="t")
 
     arg_type = parser.parse_args().type.lower()
 
     if arg_type == "full":
         arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
-        arg_filter_user = True if parser.parse_args().user.lower()[:1] == "t" else False
+        arg_filter_user = True if parser.parse_args().user.lower()[:1] == "f" else False
     
         full(arg_clean, arg_filter_user)
     elif arg_type == "stats":

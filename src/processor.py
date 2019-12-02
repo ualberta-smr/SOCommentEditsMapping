@@ -161,12 +161,13 @@ class Processor:
                         edit_id = getattr(edit, "EventId")
                         edit_date = getattr(edit, "CreationDate")
                         self.comments_per_edit[edit_id] += 1
-                        # Uncomment this code if running sqlite3 V3.25 or higher
-                        # query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
-                        # edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-                        # edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
-                        # relevant_code_matches.append((edit_index, matches))
-                        relevant_code_matches.append((edit_id, matches))
+                        # This code requires running sqlite3 V3.25 or higher
+                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
+                        edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+                        edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
+                        relevant_code_matches.append((edit_index, matches))
+                        # Otherwise use this
+                        # relevant_code_matches.append((edit_id, matches))
                         break
                 prev_edit = edit
 
@@ -213,7 +214,7 @@ class Processor:
                              "Comment",
                              "CommentGroups",
                              "HasEditsAfter",
-                             "EditGroups(EditId,MatchedGroups)",
+                             "EditGroups(EditIndex,MatchedGroups)",
                              "EditId",
                              "EditAuthor",
                              "EditDate",
