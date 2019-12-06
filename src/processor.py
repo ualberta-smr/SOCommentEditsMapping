@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from collections import defaultdict, OrderedDict
+from collections import defaultdict, OrderedDict, Counter
 from regex_patterns import find_groups
 from regex_patterns import find_mentions
 from regex_patterns import find_code
@@ -77,7 +77,7 @@ class Processor:
 
             # Get the regex groups that the comment matches
             # Combine the comment code and keywords found
-            comment_groups = find_groups(comment_text) | find_code(comment_text)
+            comment_groups = list(set(find_groups(comment_text)) | set(find_code(comment_text)))
 
             question = self.questions.loc[self.questions["PostId"] == getattr(answer, "ParentId")]
             self.stats.append([question[["PostId"]].to_string(index=False, header=False),
@@ -115,8 +115,8 @@ class Processor:
         comment_text = getattr(comment, "Text")
         comment_author = str(getattr(comment, "UserName")).strip()
         # Get the regex groups that the comment matches
-        comment_code = find_code(comment_text)
-        comment_groups = find_groups(comment_text)
+        # We do not care about cardinality here. We just want to know what were the code terms suggested
+        comment_groups = list(set(find_groups(comment_text)) | set(find_code(comment_text)))
 
         # Boolean if comment has any edits afterward
         has_edits = False
@@ -134,7 +134,7 @@ class Processor:
         edit_date = ""
         # The answer is the initial body of the answer
         prev_edit = answer
-        if len(comment_code | comment_groups) != 0:
+        if len(comment_groups) != 0:
             # We start the index from two so it is easier to compare with the stack overflow revision page
             for _, edit in enumerate(sorted_edits.itertuples(), 2):
                 edit_date = getattr(edit, "CreationDate")
@@ -155,7 +155,14 @@ class Processor:
                     prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
                     edit_groups = find_groups(getattr(edit, "Text"))
                     # Determine if the edit has the same groups as the comment
-                    matches = self.find_matches((comment_code | comment_groups), (edit_groups ^ prev_edit_groups))
+                    # We need to take cardinality of matched groups into account because we are looking for more than
+                    # existence. i.e., if an edit adds a missing method call we should keep track of that. Not just
+                    # whether or not that method was called at all
+                    # Taken from https://www.geeksforgeeks.org/python-difference-of-two-lists-including-duplicates/
+                    # by user manjeet_04 on Dec 6, 2019 at 13:51 MDT
+                    res1 = list((Counter(edit_groups) - Counter(prev_edit_groups)).elements())
+                    res2 = list((Counter(prev_edit_groups) - Counter(edit_groups)).elements())
+                    matches = self.find_matches(comment_groups, (res1 + res2))
                     if len(matches) > 0:
                         mark_as_update = True
                         edit_id = getattr(edit, "EventId")
@@ -187,12 +194,12 @@ class Processor:
     # Can not simply take the intersection because sometimes the code is not exact
     # eg. off by a space
     @staticmethod
-    def find_matches(set1, set2):
-        matches = set()
-        for match1 in set1:
-            for match2 in set2:
+    def find_matches(list1, list2):
+        matches = list()
+        for match1 in list1:
+            for match2 in list2:
                 if fuzz.ratio(match1, match2) > 90:
-                    matches.add(match1)
+                    matches.append(match1)
                     break
         return matches
 

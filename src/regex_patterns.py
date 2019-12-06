@@ -41,7 +41,7 @@ def clean_text(text):
 
 # Takes a text and a list of patterns
 def find_matches(text, patterns, clean=False):
-    matched_groups = set()
+    matched_groups = list()
     if type(text) == str:
         if clean:
             text = clean_text(text)
@@ -51,9 +51,9 @@ def find_matches(text, patterns, clean=False):
                 for index, match in enumerate(matches):
                     if type(match) == tuple:
                         for element in match:
-                            matched_groups.add(element)
+                            matched_groups.append(element)
                     else:
-                        matched_groups.add(match)
+                        matched_groups.append(match)
     return matched_groups
 
 
