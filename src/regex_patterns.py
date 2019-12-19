@@ -3,29 +3,51 @@ import re
 
 # Return a set of all matched regex patterns
 def find_groups(text):
-    patterns = [re.compile("\`([^\s]*?)\`"),
-                re.compile("[a-zA-Z][a-zA-Z0-9]+\(.*?\)"),
+    patterns = [
+                # matches string where no whitespace between backticks
+                re.compile("\`([^\s]*?)\`"),
+                # matches method calls (both camelCase, and snakeCase)
+                re.compile("[a-zA-Z0-9_]+\(.*?\)"),
+                # Java generics
                 re.compile("[A-Z][a-zA-Z]+ ?<[A-Z][a-zA-Z]*>"),
-                re.compile("[_a-zA-Z0-9\.]+[(][a-zA-Z_,\.]*[)]"),
+                # account for dot accesses e.g., foo.bar(a.foo, b.foo)
+                re.compile("[_a-zA-Z0-9\.()'\"#\$]+\([a-zA-Z0-9_,+-:\.\" ]*\)"),
+                # ex. ./f.o.o.bar
                 re.compile("([\.]?[/]?\w+\.\w+\.?\w+(?:\.\w+)*)"),
-                re.compile("[A-Za-z]+\.[A-Z]+"),
+                # ex. " fOo.B_ar"
                 re.compile("(?:\s|^)([a-zA-z]{3,}\.[A-Za-z]+_[a-zA-Z_]+)"),
+                # ex. "FOO BA R" -> "FOO", "BA"
                 re.compile("\b([A-Z]{2,})\b"),
+                # matches static final variable ex. "FOO_BAR999"
                 re.compile("(?:\s|^)([A-Z]+_[A-Z0-9_]+)"),
+                # matches lowercase static final ex. " foo_bar999"
                 re.compile("(?:\s|^)([a-z]+_[a-z0-9_]+)"),
-                re.compile("\w{3,}:\w+[a-zA-Z0-9:]*"),
-                re.compile("(?:\s|^)([A-Z]{3,}[a-z0-9]{2,}\w*)(\s|\.\s|\.$|$|,\s)"),
+                # matches "foo:bar69:69:4:20"
+                re.compile("\w+:\w+[a-zA-Z0-9:]*"),
+                # matches "FOOba, " or "FOOba." or "Fooba" or "FOOba. " or "FOOba "
+                re.compile("(?:\s|^)([A-Z]+[a-z0-9]+\w*)[\s|\.\s|\.$|$|,\s]"),
+                # ex. "</FooBar>", "<FooBar>", "< >"
                 re.compile("</?[a-zA-Z0-9 ]+>"),
+                # anything within {{}} ex. "{{}}", "{{{{{{{{{{}}"
                 re.compile("\{\{[^\}]*\}\}"),
+                # anything within {%%} ex. "{%{{}}}}}{{{}}{}{ %}"
                 re.compile("\{\%[^\%]*\%\}"),
-                re.compile("‘[^’]*’"),
+                # anything between two apostrophes ex. 'Foo Bar'
+                re.compile("[‘'][\w\s]+[’']"),
+                # anything between four underscores ex "__init__"
                 re.compile("__[^_]*__"),
-                re.compile("\$[A-Za-z\_]+"),
+                # matches anything after a $ ex. "$FOO_BAR"
+                re.compile("\$[A-Za-z\_()'\"#]+"),
+                # matches camel case
                 re.compile("(?:[a-z]*[A-Z]*[a-z0-9_]+[A-Z]+[a-z0-9_]*)+"),
-                re.compile("((throw new) ([_a-zA-Z0-9\.]+[(]*[a-zA-Z_,\.]*[)]*))"),
-                # re.compile("((return) ([_a-zA-Z0-9\.]+[(]*[a-zA-Z_,\.]*[)]*))"),
-                re.compile("(((?:[a-zA-Z]+)\[[a-zA-Z0-9]+\]) *[a-zA-Z]+ *= *[\sa-zA-Z0-9\[\]\/\*\+\-]+)"),
-                re.compile("(((?:[a-zA-Z]+)) *[\+|\-|*|\/|\%]*= *[\sa-zA-Z0-9\[\]\/\*\+\-]+)"),
+                # matches exception throwing ex. "throw new RuntimeException("Wrong")"
+                re.compile("((throw new) +([_a-zA-Z0-9\.]+[(]*[a-zA-Z_,\.\"]*[)]*))"),
+                # matches array assignment ex. "String[5] foo = bar"
+                re.compile("(?:[a-zA-Z]+)\[[a-zA-Z0-9]*\] *[a-zA-Z]+ *= *[a-zA-Z0-9\[\]\/\*\+\-, ]+"),
+                # matches variable updating ex. "foo = bar"
+                re.compile("(?:[a-zA-Z]+) *[\+|\-|*|\/|\%]*= *[a-zA-Z0-9\[\]\{\}\:\/\*\+\-, \"]+"),
+                # matches +=, -= ==, and ===
+                re.compile("[\w\"\' ]+ *[+-=]={1,2} *[\w ()\"\'=]+")
                 ]
     return find_matches(text, patterns, True)
 
@@ -51,9 +73,9 @@ def find_matches(text, patterns, clean=False):
                 for index, match in enumerate(matches):
                     if type(match) == tuple:
                         for element in match:
-                            matched_groups.append(element)
+                            matched_groups.append(element.strip())
                     else:
-                        matched_groups.append(match)
+                        matched_groups.append(match.strip())
     return matched_groups
 
 
