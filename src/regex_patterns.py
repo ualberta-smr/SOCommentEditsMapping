@@ -7,25 +7,25 @@ def find_groups(text):
                 # matches string where no whitespace between backticks
                 re.compile("\`([^\s]*?)\`"),
                 # matches method calls (both camelCase, and snakeCase)
-                re.compile("[a-zA-Z0-9_]+\(.*?\)"),
+                re.compile("[a-zA-Z0-9_]+\(.*?\)+"),
                 # Java generics
                 re.compile("[A-Z][a-zA-Z]+ ?<[A-Z][a-zA-Z]*>"),
-                # account for dot accesses e.g., foo.bar(a.foo, b.foo)
-                re.compile("[_a-zA-Z0-9\.()'\"#\$]+\([a-zA-Z0-9_,+-:\.\" ]*\)"),
+                # match method calls (with dot accesses)
+                re.compile("[a-zA-Z0-9._()'#$\"]+[([].*?[)\]]+"),
                 # ex. ./f.o.o.bar
                 re.compile("([\.]?[/]?\w+\.\w+\.?\w+(?:\.\w+)*)"),
                 # ex. " fOo.B_ar"
                 re.compile("(?:\s|^)([a-zA-z]{3,}\.[A-Za-z]+_[a-zA-Z_]+)"),
                 # ex. "FOO BA R" -> "FOO", "BA"
                 re.compile("\b([A-Z]{2,})\b"),
-                # matches static final variable ex. "FOO_BAR999"
-                re.compile("(?:\s|^)([A-Z]+_[A-Z0-9_]+)"),
-                # matches lowercase static final ex. " foo_bar999"
-                re.compile("(?:\s|^)([a-z]+_[a-z0-9_]+)"),
-                # matches "foo:bar69:69:4:20"
-                re.compile("\w+:\w+[a-zA-Z0-9:]*"),
+                # matches static variables ex. "FOO_BAR999"
+                re.compile("(?:\s|^)[A-Z]+_[A-Z0-9_]+"),
+                # matches lowercase static variables ex. " foo_bar999"
+                re.compile("(?:\s|^)[a-z]+_[a-z0-9_]+"),
+                # matches word characters followed by either ':', '-', or '['
+                re.compile("\w+\[*[:\-[][a-zA-Z0-9\-\[:$]+\]*"),
                 # matches "FOOba, " or "FOOba." or "Fooba" or "FOOba. " or "FOOba "
-                re.compile("(?:\s|^)([A-Z]+[a-z0-9]+\w*)[\s|\.\s|\.$|$|,\s]"),
+                re.compile("(?:\s|^)([A-Z]{3,}[a-z0-9]{2,}\w*)[\s|\.\s|\.$|$|,\s]"),
                 # ex. "</FooBar>", "<FooBar>", "< >"
                 re.compile("</?[a-zA-Z0-9 ]+>"),
                 # anything within {{}} ex. "{{}}", "{{{{{{{{{{}}"
@@ -37,15 +37,15 @@ def find_groups(text):
                 # anything between four underscores ex "__init__"
                 re.compile("__[^_]*__"),
                 # matches anything after a $ ex. "$FOO_BAR"
-                re.compile("\$[A-Za-z\_()'\"#]+"),
+                re.compile("(\$[A-Za-z_\"-> ]+)[\w[\] \"->]+"),
                 # matches camel case
-                re.compile("(?:[a-z]*[A-Z]*[a-z0-9_]+[A-Z]+[a-z0-9_]*)+"),
+                # re.compile("(?:[a-z]*[A-Z]*[a-z0-9_]+[A-Z]+[a-z0-9_]*)+"),
                 # matches exception throwing ex. "throw new RuntimeException("Wrong")"
                 re.compile("((throw new) +([_a-zA-Z0-9\.]+[(]*[a-zA-Z_,\.\"]*[)]*))"),
                 # matches array assignment ex. "String[5] foo = bar"
                 re.compile("(?:[a-zA-Z]+)\[[a-zA-Z0-9]*\] *[a-zA-Z]+ *= *[a-zA-Z0-9\[\]\/\*\+\-, ]+"),
                 # matches variable updating ex. "foo = bar"
-                re.compile("(?:[a-zA-Z]+) *[\+|\-|*|\/|\%]*= *[a-zA-Z0-9\[\]\{\}\:\/\*\+\-, \"]+"),
+                re.compile("(?:\w+) *[\+|\-|*|\/|\%]*= *[\w\[\]\{\}\:\/\*\+\-, \"]+"),
                 # matches +=, -= ==, and ===
                 re.compile("[\w\"\' ]+ *[+-=]={1,2} *[\w ()\"\'=]+")
                 ]
