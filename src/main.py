@@ -5,6 +5,7 @@ import pandas as pd
 
 from generate import generate_result_stats, generate_simple_csvs, generate_stat_csv
 from processor import Processor
+from evaluate import evaluate
 
 
 def setup_sqlite(conn):
@@ -71,17 +72,21 @@ def main():
     parser = argparse.ArgumentParser(description="SOTorrent - Comment Induced Updates")
     parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
     parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="t")
-    parser.add_argument("--user", "-f", help="Allow commenters to also be editors: True, False", type=str, default="t")
+    parser.add_argument("--user", "-u", help="Allow commenters to also be editors: True, False", type=str, default="f")
+    parser.add_argument("--eval", "-e", help="Evaluate the program against a ground truth (provide ground_truth.csv): True, False", type=str, default="f")
 
     arg_type = parser.parse_args().type.lower()
 
-    if arg_type == "full":
-        arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
-        arg_filter_user = True if parser.parse_args().user.lower()[:1] == "f" else False
-    
-        full(arg_clean, arg_filter_user)
-    elif arg_type == "stats":
-        stats()
+    if parser.parse_args().eval.lower()[:1] == "t":
+        evaluate()
+    else:
+        if arg_type == "full":
+            arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
+            arg_filter_user = True if parser.parse_args().user.lower()[:1] == "f" else False
+
+            full(arg_clean, arg_filter_user)
+        elif arg_type == "stats":
+            stats()
 
 
 main()
