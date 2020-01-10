@@ -150,6 +150,7 @@ class Processor:
 
                     # If we are filtering users and the comment author and edit author are the same then skip this edit
                     if self.filter_user and comment_author == edit_author:
+                        prev_edit = edit
                         continue
 
                     prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
