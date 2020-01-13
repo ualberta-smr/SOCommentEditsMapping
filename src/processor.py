@@ -11,13 +11,14 @@ from fuzzywuzzy import fuzz
 
 
 class Processor:
-    def __init__(self, db_conn, df_questions, df_answers, df_comments, df_edits, filter_user):
+    def __init__(self, db_conn, df_questions, df_answers, df_comments, df_edits, filter_user, naive):
         self.conn = db_conn
         self.questions = df_questions
         self.answers = df_answers
         self.comments = df_comments
         self.edits = df_edits
         self.filter_user = filter_user
+        self.naive = naive
 
         self.stats = []
         self.total_marked_updates = 0
@@ -148,35 +149,52 @@ class Processor:
                     else:
                         edits_by_others += 1
 
-                    # If we are filtering users and the comment author and edit author are the same then skip this edit
-                    if self.filter_user and comment_author == edit_author:
-                        prev_edit = edit
-                        continue
-
-                    prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
-                    edit_groups = find_groups(getattr(edit, "Text"))
-                    # Determine if the edit has the same groups as the comment
-                    # We need to take cardinality of matched groups into account because we are looking for more than
-                    # existence. i.e., if an edit adds a missing method call we should keep track of that. Not just
-                    # whether or not that method was called at all
-                    # Taken from https://www.geeksforgeeks.org/python-difference-of-two-lists-including-duplicates/
-                    # by user manjeet_04 on Dec 6, 2019 at 13:51 MDT
-                    res1 = list((Counter(edit_groups) - Counter(prev_edit_groups)).elements())
-                    res2 = list((Counter(prev_edit_groups) - Counter(edit_groups)).elements())
-                    matches = self.find_matches(comment_groups, (res1 + res2))
-                    if len(matches) > 0:
+                    if self.naive:
                         mark_as_update = True
                         edit_id = getattr(edit, "EventId")
                         edit_date = getattr(edit, "CreationDate")
                         self.comments_per_edit[edit_id] += 1
                         # This code requires running sqlite3 V3.25 or higher
-                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
-                        edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-                        edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
-                        relevant_code_matches.append((edit_index, matches))
+                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(
+                            answer_id)
+                        edit_ids = pd.read_sql_query(query, self.conn,
+                                                     parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+                        edit_index = int(
+                            edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
+                        relevant_code_matches.append((edit_index, comment_groups))
                         # Otherwise use this
-                        # relevant_code_matches.append((edit_id, matches))
+                        # relevant_code_matches.append((edit_id, comment_groups))
                         break
+                    else:
+                        # If we are filtering users and the comment author and edit author are the same then skip this edit
+                        if self.filter_user and comment_author == edit_author:
+                            prev_edit = edit
+                            continue
+
+                        prev_edit_groups = find_groups(getattr(prev_edit, "Text"))
+                        edit_groups = find_groups(getattr(edit, "Text"))
+                        # Determine if the edit has the same groups as the comment
+                        # We need to take cardinality of matched groups into account because we are looking for more than
+                        # existence. i.e., if an edit adds a missing method call we should keep track of that. Not just
+                        # whether or not that method was called at all
+                        # Taken from https://www.geeksforgeeks.org/python-difference-of-two-lists-including-duplicates/
+                        # by user manjeet_04 on Dec 6, 2019 at 13:51 MDT
+                        res1 = list((Counter(edit_groups) - Counter(prev_edit_groups)).elements())
+                        res2 = list((Counter(prev_edit_groups) - Counter(edit_groups)).elements())
+                        matches = self.find_matches(comment_groups, (res1 + res2))
+                        if len(matches) > 0:
+                            mark_as_update = True
+                            edit_id = getattr(edit, "EventId")
+                            edit_date = getattr(edit, "CreationDate")
+                            self.comments_per_edit[edit_id] += 1
+                            # This code requires running sqlite3 V3.25 or higher
+                            query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
+                            edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+                            edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
+                            relevant_code_matches.append((edit_index, matches))
+                            # Otherwise use this
+                            # relevant_code_matches.append((edit_id, matches))
+                            break
                 prev_edit = edit
 
             if mark_as_update:

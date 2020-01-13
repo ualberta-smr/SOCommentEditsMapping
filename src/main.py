@@ -35,7 +35,7 @@ def get_data(conn):
     return df_questions, df_answers, df_comments, df_edits
 
 
-def full(clean, filter_user):
+def full(clean, filter_user, naive):
     conn = sqlite3.connect("sotorrent.sqlite3")
     print("Connection made")
     if clean:
@@ -45,7 +45,7 @@ def full(clean, filter_user):
     end = time.time()
     print("Data loading took {0:2f} seconds".format(end - start))
 
-    pipeline = Processor(conn, df_questions, df_answers, df_comments, df_edits, filter_user)
+    pipeline = Processor(conn, df_questions, df_answers, df_comments, df_edits, filter_user, naive)
     start = time.time()
     pipeline.process()
     end = time.time()
@@ -73,6 +73,7 @@ def main():
     parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
     parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="t")
     parser.add_argument("--user", "-u", help="Allow commenters to also be editors: True, False", type=str, default="f")
+    parser.add_argument("--naive", "-n", help="Naively pair comments and edits by time: True, False", type=str, default="f")
     parser.add_argument("--eval", "-e", help="Evaluate the program against a ground truth (provide ground_truth.csv): True, False", type=str, default="f")
 
     arg_type = parser.parse_args().type.lower()
@@ -83,8 +84,9 @@ def main():
         if arg_type == "full":
             arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
             arg_filter_user = True if parser.parse_args().user.lower()[:1] == "f" else False
+            arg_naive = True if parser.parse_args().naive.lower()[:1] == "t" else False
 
-            full(arg_clean, arg_filter_user)
+            full(arg_clean, arg_filter_user, arg_naive)
         elif arg_type == "stats":
             stats()
 
