@@ -20,7 +20,7 @@ def evaluate():
                 if int(edit) == int(row["EditIds"]):
                     true_positives += 1
                     # Keep track of if the match is useful
-                    if re.search(re.compile("Yes|yes"), row["Useful"]):
+                    if not pd.isnull(row["Useful"]) and re.search(re.compile("Yes|yes"), row["Useful"]):
                         useful += 1
             # Regardless of if the ground truth marks the comment, the program found something so keep track of it
             marked_positives += 1

@@ -7,15 +7,15 @@ def find_groups(text):
                 # matches string where no whitespace between backticks
                 re.compile("\`([^\s]*?)\`"),
                 # matches method calls (both camelCase, and snakeCase)
-                re.compile("[a-zA-Z0-9_]+\(.*?\)+"),
+                re.compile("[a-zA-Z0-9_]+\(.*\)"),
                 # match method calls (with dot accesses)
-                re.compile("[a-zA-Z0-9._()'#$\"]+\(.*?\)+"),
+                re.compile("[a-zA-Z0-9._()'#$\"]+\(.*\)+"),
                 # Java generics
                 re.compile("[A-Z][a-zA-Z]+ ?<[A-Z][a-zA-Z]*>"),
                 # Matches single dot access
                 re.compile("[A-Za-z]+\.[A-Z]+"),
                 # ex. ./f.o.o.bar
-                re.compile("([\.]?[/]?\w+\.\w+\.?\w+(?:\.\w+)*)"),
+                # re.compile("([\.]?[/]?\w+\.\w+\.?\w+(?:\.\w+)*)"),
                 # ex. " fOo.B_ar"
                 re.compile("(?:\s|^)([a-zA-z]{3,}\.[A-Za-z]+_[a-zA-Z_]+)"),
                 # ex. "FOO BA R" -> "FOO", "BA"
@@ -47,7 +47,7 @@ def find_groups(text):
                 # matches array assignment ex. "String[5] foo = bar"
                 re.compile("(?:[a-zA-Z]+)\[[a-zA-Z0-9]*\] *[a-zA-Z]+ *= *[a-zA-Z0-9\[\]\/\*\+\-, ]+"),
                 # matches variable updating ex. "foo = bar"
-                re.compile("(?:\w+) *[\+|\-|*|\/|\%]*= *[\w\[\]\{\}\:\/\*\+\-, \"]+"),
+                re.compile("(?:\w+) *[\+\-*\/\%]*= *[\w\[\]\{\}\:\/\*\+\-, \"]+"),
                 # matches +=, -= ==, and ===
                 re.compile("[\w\"\' ]+ *[+-=]={1,2} *[\w ()\"\'=]+")
                 ]
