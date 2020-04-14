@@ -2,8 +2,9 @@ import ast
 import pytest
 import pandas as pd
 import sys
+import os
 
-sys.path.append('/smr/Projects/Python/socomments/src')
+sys.path.append(os.path.abspath('../src'))
 
 from processor import Processor
 
