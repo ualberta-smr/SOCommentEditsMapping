@@ -51,19 +51,19 @@ def generate_result_stats():
         tags = find_tags(getattr(row, "Tags"))
         for tag in tags:
             # Check to see how many times the commenter is the same as the editor
-            if getattr(row, "CommentAuthor").strip() == getattr(row, "EditAuthor").strip():
+            if str(getattr(row, "CommentAuthor")).strip() == str(getattr(row, "EditAuthor")).strip():
                 tag_dict[tag]["commenter_editor_same"] += 1
             else:
                 tag_dict[tag]["commenter_editor_different"] += 1
 
             # Count how many times the editor is the same as the answer author
-            if getattr(row, "AnswerAuthor").strip() == getattr(row, "EditAuthor").strip():
+            if str(getattr(row, "AnswerAuthor")).strip() == str(getattr(row, "EditAuthor")).strip():
                 tag_dict[tag]["answer_editor_same"] += 1
             else:
                 tag_dict[tag]["answer_editor_different"] += 1
 
             # Count how many times the Questioner is the same as the commenter
-            if getattr(row, "QuestionAuthor").strip() == getattr(row, "CommentAuthor").strip():
+            if str(getattr(row, "QuestionAuthor")).strip() == str(getattr(row, "CommentAuthor")).strip():
                 tag_dict[tag]["question_commenter_same"] += 1
             else:
                 tag_dict[tag]["question_commenter_different"] += 1
