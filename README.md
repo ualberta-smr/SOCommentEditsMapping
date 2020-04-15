@@ -13,7 +13,7 @@ We used existing scripts from the [sotorrent-sqlite3 GitHub repo](https://github
 
 * `get_and_verify_all.sh` which is used to download the *.xml.gz and *.csv.gz files of Version 2018-12-09 of the SOTorrent dump from [zenodo](https://zenodo.org/record/3460115) OR the user can download the version of SOTorrent they want manually (this project uses Version 2019-09-23). 
 
-* `main.py` is what is used to create an sqlite database called *sotorrent.sqlite3* and populates it with the data in the SOTorrent dump. This process takes ~2 days.
+* `main.py` is what is used to create an sqlite database called *sotorrent.sqlite3* and populate it with the data in the SOTorrent dump. Note that this process takes ~2 days.
 
 The program requires the following Python libraries:
 * [Pandas](https://pandas.pydata.org/) v0.24.2
@@ -22,7 +22,7 @@ The program requires the following Python libraries:
     * [python-Levenshtein]() v0.12.0
 * [NumPy](https://numpy.org/) v1.16.4
 
-These can all be installed by running `pip3 install [library-name]` or with the `requirements.txt` file provided with `pip3 install -r requirements.txt`
+These dependencies can all be installed by running `pip3 install [library-name]` or using the `requirements.txt` file provided with `pip3 install -r requirements.txt`
 
 ## Running
 The program can be run in the root directory of the project with the command `python3 src/main.py`
