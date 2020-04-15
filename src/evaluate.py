@@ -3,7 +3,7 @@ import re
 
 
 def evaluate():
-    ground_truth = pd.read_csv('ground_truth.csv', index_col=False, parse_dates=["Comment Date"])
+    ground_truth = pd.read_csv('data/ground_truth.csv', index_col=False, parse_dates=["Comment Date"])
 
     true_positives = 0
     marked_positives = 0
