@@ -1,5 +1,5 @@
 # Overview
-This project analyzes crowd-sourced answers on Stack Overflow to determine a relationship between comments and edits on an answer. It does this by looping through the comments and edits on an answer and uses regular expressions to identify common code terms in order to determine whether a comment caused an edit. This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags as per our EMSE Submission titled "Can We Use Stack Overflow as a Source of Explainable Bug-fix Data?" by Henry Tang and Sarah Nadi.
+This project analyzes crowd-sourced answers on Stack Overflow to determine a relationship between comments and edits on an answer. It does this by looping through the comments and edits on an answer and uses regular expressions to identify common code terms in order to determine whether a comment caused an edit. This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags (`Java`, `Javascript`, `Android`, `Php`, and `Python`) as per our EMSE Submission titled "Can We Use Stack Overflow as a Source of Explainable Bug-fix Data?" by Henry Tang and Sarah Nadi.
 
 # Instructions
 The following is the set of instructions needed to run this project.
