@@ -81,8 +81,11 @@ def generate_result_stats():
         if not tag_dict[tag]["response_times"]:
             tag_dict[tag]["average_response_time"] = pd.NaT
         else:
-            tag_dict[tag]["average_response_time"] = \
-                sum(tag_dict[tag]["response_times"], datetime.timedelta(0)) / len(tag_dict[tag]["response_times"])
+            try:
+                tag_dict[tag]["average_response_time"] = \
+                    sum(tag_dict[tag]["response_times"], datetime.timedelta(0)) / len(tag_dict[tag]["response_times"])
+            except:
+                tag_dict[tag]["average_response_time"] = "Could not calculate average response time"
 
     file = open("result_stats.txt", "w")
     for tag in tag_dict.keys():
