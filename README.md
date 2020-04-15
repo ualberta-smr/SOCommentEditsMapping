@@ -142,12 +142,12 @@ To import csvs into an sqlite3 database follow these steps:
 
 1. Start sqlite3 with an empty database using `sqlite3 <database_name>.sqlite3`
 
-2. Create tables to store the data in the csvs. You can write a *.sql file and run it in sqlite using `.read path-to-script`
+2. Create tables to store the data in the csvs. You can write a *.sql file and run it in sqlite using `.read <path-to-script>`
     * The EditHistory and EditHistory_Code schemas are already provided in the `sql/EditHistory.sql` and `sql/EditHistory_Code.sql` files
 
 3. Change the read mode of sqlite3 by using `.mode csv`
 
-4. Import the csvs by runnning `.import "path-to-csv" <table-name>`
+4. Import the csvs by runnning `.import <path-to-csv> <table-name>`
 
 # Contributors
 
