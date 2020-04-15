@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS EditHistory_SMR;
-CREATE TABLE EditHistory_SMR (
+DROP TABLE IF EXISTS EditHistory_Code;
+CREATE TABLE EditHistory_Code (
 	PostId INTEGER NOT NULL,
 	ParentId INTEGER,
 	PostTypeId INTEGER NOT NULL,
@@ -11,11 +11,11 @@ CREATE TABLE EditHistory_SMR (
 	Score INTEGER,
 	Text TEXT
 );
-CREATE INDEX EditHistory_SMRPostIdIndex ON EditHistory_SMR(PostId);
-CREATE INDEX EditHistory_SMREventIdIndex ON EditHistory_SMR(EventId);
+CREATE INDEX EditHistory_CodePostIdIndex ON EditHistory_Code(PostId);
+CREATE INDEX EditHistory_CodeEventIdIndex ON EditHistory_Code(EventId);
 
 -- find answers with code blocks
-INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
+INSERT INTO EditHistory_Code(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
 eh.PostTypeId, 
@@ -34,7 +34,7 @@ AND eh.Event = 'InitialBody'
 GROUP BY eh.EventId;
 
 -- Create blank rows if initial body has no code blocks
-INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
+INSERT INTO EditHistory_Code(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
 eh.PostTypeId, 
@@ -57,14 +57,14 @@ GROUP BY eh.EventId
 ) AND Event = 'InitialBody';
 
 -- Insert comments
-INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
+INSERT INTO EditHistory_Code(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT *
 FROM EditHistory eh
 WHERE eh.PostTypeId = 2 
 AND eh.Event = 'Comment';
 
 -- Insert code block edits
-INSERT INTO EditHistory_SMR(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
+INSERT INTO EditHistory_Code(PostId, ParentId, PostTypeId, EventId, Event, UserName, CreationDate, Tags, Score, Text)
 SELECT eh.PostId, 
 eh.ParentId, 
 eh.PostTypeId, 
