@@ -57,7 +57,7 @@ The list of regular expression patterns we used is located in `src/regex_pattern
 
 ## SQL scripts
 
-There are two sql scripts that are required by the program.
+The `sql/` folder contains the following two sql scripts which create the tables required by the program:
 
 * `EditHistory.sql`
 
@@ -69,7 +69,7 @@ There are two sql scripts that are required by the program.
 
 # Results
 
-Our results of running the program on the five tags (java, javascript, php, Android, and Python) on SOTorrent version 2019-09-23 project are located [here](). This file also includes the database tables used.
+Our results of running the program on the five tags (java, javascript, php, Android, and Python) on SOTorrent version 2019-09-23 project are located [here](). This file also includes the database data we used or created (in the form of csv files).
 
 The extracted zip folder will contain multiple directories and files. These directories and files are described below.
 To import the csvs into an sqlite3 database follow the steps in the **Importing** section
@@ -78,11 +78,11 @@ To import the csvs into an sqlite3 database follow the steps in the **Importing*
 
     * `QuestionIds.csv`
         
-        This file contains the question ids of each of the five tags used. 
+        This file contains all question ids belonging to each of the five analyzed tags. This is simply a filtered version of the original SOTorrent data that is specific to the five analyzed tags.
 
     * `AnswerIds.csv`
         
-        This file contains the answer ids of each of the five tags used. They can be used to modify the queries in the code to isolate and focus on a specific tag. e.g., `SELECT * FROM EditHistory_Code WHERE Event = 'InitialBody' AND PostId IN (SELECT Id from AnswerIds WHERE Tag = 'Java');`
+        This file contains all answer ids belonging to each of the five analyzed tags. They can be used to modify the queries in the code to isolate and focus on a specific tag. e.g., `SELECT * FROM EditHistory_Code WHERE Event = 'InitialBody' AND PostId IN (SELECT Id from AnswerIds WHERE Tag = 'Java');`
 
     * `EditHistory_Code.csv`
 
@@ -92,7 +92,7 @@ To import the csvs into an sqlite3 database follow the steps in the **Importing*
 
         This table is the aggregation of all questions, answers, and their histories and comments. This table is used predominantly for the creation of the EditHistory_Code table, but is also used to retrieve the question id.
     
-Additionally the `PostBlockVersion.csv`, `PostHistory.csv`, `Posts.csv`, `PostVersion.csv`, and `Users.csv` files are provided if you wish to create the `EditHistory` and `EditHistory_Code` tables without wanting to download the entire SOTorrent dump.
+Additionally, the `PostBlockVersion.csv`, `PostHistory.csv`, `Posts.csv`, `PostVersion.csv`, and `Users.csv` files are provided if you wish to create the `EditHistory` and `EditHistory_Code` tables without wanting to download the entire SOTorrent dump.
 
 2. The `results` directory contains the results of running the program on each tag separately:
 
