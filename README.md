@@ -111,6 +111,10 @@ Additionally, the `PostBlockVersion.csv`, `PostHistory.csv`, `Posts.csv`, `PostV
     * `<tag>.csv`
 
         These five csv files are the results of the authors' ground truth analysis of comments for 20 questions in each of the focused tags. The *Resolution* column are the edit ids agreed upon by the authors. This table is used in the *Comparison with Ground Truth* subsection or the *Mapping Comments to Edits* section of the paper
+        
+    * `kappa_stats.csv`
+    
+        This file contains details the calculations for the Cohen's Kappa coefficient over the ground truth set. This is used in subsection *Ground Truth Creation*.
 
 4. The `general_precision` directory contains files used in answering the 4 research questions in sections *Precision of Comment-Edit Pairs*, *Tangled Changes*, *Types of Changes in Comment-Edit Pairs*, and *Usefulness of Comment-Edit Pairs* of the paper:
 
