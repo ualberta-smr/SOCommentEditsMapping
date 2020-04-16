@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import numpy as np
 
 
 def evaluate():
@@ -61,3 +62,6 @@ def evaluate():
 
     print("Precision : %d%%\nRecall    : %d%%\nUseful    : %d%%"
           % (round(precision * 100), round(recall * 100), round(useful * 100)))
+
+    print("Answer IDs not found:",
+          np.setdiff1d(np.asarray(ground_truth["AnswerId"].unique().tolist()), np.asarray(seen)))
