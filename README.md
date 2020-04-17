@@ -51,7 +51,7 @@ This program has multiple command line options:
 * `True` tells the program to evaluate itself against a given `ground_truth.csv`. 
     * Our sample `ground_truth.csv` is provided under the `data/` directory. The `ground_truth.csv` requires four columns: `AnswerIds`, `CommentIds`, `EditIds`, and `Useful`. `AnswerIds` are the post ids of the answers to evaluate. `CommentIds` are the ids of the comments on each answer. `EditIds` are the manual evaluations of which comments and edits are paired. `Useful` is a column containing the manual evaluations of whether the comment-edit pair is useful. If useful, this is denoted by the word `yes`. 
     * The program will take this `ground_truth.csv` and compare it with the `results.csv` that is generated in the root folder after successfully running the analysis. If there are answer IDs in the `ground_truth.csv` that are not found in the `results.csv` a note will be printed to stdout detailing which answer IDs were not found. 
-    * Not that if this flag is set to `True`, the program will only run the ground truth evaluation and will not run any other parts of the program (this uses the comment-edit pairs in the `results.csv` from a previous complete analysis under the `EditGroups...` column and does not re-match pairs)
+    * Note that if this flag is set to `True`, the program will only run the ground truth evaluation and will not run any other parts of the program (this uses the comment-edit pairs in the `results.csv` from a previous complete analysis under the `EditGroups...` column and does not re-match pairs)
 * False is the **default** value.
 
 ## Regular expression patterns
