@@ -54,6 +54,13 @@ This program has multiple command line options:
     * Note that if this flag is set to `True`, the program will only run the ground truth evaluation and will not run any other parts of the program (this uses the comment-edit pairs in the `results.csv` from a previous complete analysis under the `EditGroups...` column and does not re-match pairs)
 * False is the **default** value.
 
+`--pack` or `-p` must be provided a `<filename>.csv`
+
+  * The program will take a csv in the same format as the `results.csv`. It requires the *QuestionId*, *AnswerId*, *Tags*, *CommentId*, *EditId*, and *Comment* columns with optional columns *Confirmed*, *Useful*, *Tangled*, and *Category*. Columns *Confirmed*, *Useful*, *Tangled* are expected to be either 1 (true) or 0 (false). 
+  * It also requires the `sotorrent.sqlite3` database in the root directory of the project.
+  * This option will tell the program to create a JSON object array where each JSON object represents a comment-edit pair and write it to the `results.json` file
+  * The program will also package the results into JSON when performing a full analysis 
+
 ## Regular expression patterns
 
 The list of regular expression patterns we used is located in `src/regex_patterns.py` at the top of the file.

@@ -6,6 +6,7 @@ import pandas as pd
 from generate import generate_result_stats, generate_simple_csvs, generate_stat_csv
 from processor import Processor
 from evaluate import evaluate
+from package import package
 
 
 def setup_sqlite(conn):
@@ -49,11 +50,15 @@ def full(clean, filter_user, naive):
     start = time.time()
     pipeline.process()
     end = time.time()
-    conn.close()
     print("Took {0:2f} seconds to process".format(end - start))
 
     # Generate the statistics
     stats()
+
+    # Package the results into JSON
+    package(conn, "results.csv")
+    print("Finished packaging pairs into JSON")
+    conn.close()
 
 
 def stats():
@@ -75,11 +80,16 @@ def main():
     parser.add_argument("--user", "-u", help="Allow commenters to also be editors: True, False", type=str, default="f")
     parser.add_argument("--naive", "-n", help="Naively pair comments and edits by time: True, False", type=str, default="f")
     parser.add_argument("--eval", "-e", help="Evaluate the program against a ground truth (provide ground_truth.csv): True, False", type=str, default="f")
+    parser.add_argument("--pack", "-p", help="Package the results into JSON format: <filename>.csv", type=str)
 
     arg_type = parser.parse_args().type.lower()
 
     if parser.parse_args().eval.lower()[:1] == "t":
         evaluate()
+    elif parser.parse_args().pack.lower()[-3:] == "csv":
+        conn = sqlite3.connect("sotorrent.sqlite3")
+        package(conn, parser.parse_args().pack.lower())
+        conn.close()
     else:
         if arg_type == "full":
             arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
