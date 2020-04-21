@@ -33,7 +33,7 @@ def package(db_conn, results_file):
             pair["Edit Id"] = edit_id
             pair["Comment"] = str(row["Comment"])
 
-            query = "SELECT EventId, Text FROM EditHistory WHERE Event <> 'Comment' AND PostId = {} ORDER BY CreationDate".format(answer_id)
+            query = "SELECT EventId, Text FROM EditHistory_Code WHERE Event <> 'Comment' AND PostId = {} ORDER BY CreationDate".format(answer_id)
             edits = pd.read_sql_query(query, db_conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
             for edit_index, edit in edits.iterrows():
                 if edit["EventId"] == edit_id:
@@ -41,7 +41,7 @@ def package(db_conn, results_file):
                     pair["Before"] = str(prev_edit["Text"])
                     pair["After"] = str(edit["Text"])
                     break
-            pair["Confirmed"] = int(row["Confirmed"]) if "Confirmed" in row else ""
+            pair["Confirmed"] = int(row["Confirmed"]) if "Confirmed" in row and not pd.isnull(row["Confirmed"]) else ""
             pair["Useful"] = int(row["Useful"]) if "Useful" in row and not pd.isna(row["Useful"]) else ""
             pair["Tangled"] = int(row["Tangled"]) if "Tangled" in row and not pd.isna(row["Tangled"]) else ""
             pair["Category"] = row["Category"] if "Category" in row else ""
