@@ -33,14 +33,45 @@ def package(db_conn, results_file):
             pair["Edit Id"] = edit_id
             pair["Comment"] = str(row["Comment"])
 
-            query = "SELECT EventId, Text FROM EditHistory_Code WHERE Event <> 'Comment' AND PostId = {} ORDER BY CreationDate".format(answer_id)
-            edits = pd.read_sql_query(query, db_conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+            # PostHistoryId is the EventId
+            query = "SELECT PostHistoryId, LocalId, Content FROM PostBlockVersion WHERE PostId = {} ORDER BY PostHistoryId;".format(answer_id)
+            edits = pd.read_sql_query(query, db_conn)
             for edit_index, edit in edits.iterrows():
-                if edit["EventId"] == edit_id:
-                    prev_edit = edits.iloc[edit_index - 1]
-                    pair["Before"] = str(prev_edit["Text"])
-                    pair["After"] = str(edit["Text"])
-                    break
+                if edit["PostHistoryId"] == edit_id:
+                    prev_edit_id = edits.iloc[edit_index - 1]["PostHistoryId"]
+                    edit_snippets = edits.loc[edits["PostHistoryId"] == edit_id]
+                    prev_edit_snippets = edits.loc[edits["PostHistoryId"] == prev_edit_id]
+
+                    # TODO: Loop through all the snippets in the previous edit and the current edit
+                    # Sometimes they do not have the same number of snippets (Use localId for matching)
+                    before = []
+                    after = []
+                    # TODO: May have to loop through all prev_edit_snippets too in case of deletion
+                    for snip_index, snippet in edit_snippets.iterrows():
+                        edit_snippet = str(snippet["Content"])
+                        prev_edit_snippet = str(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == snippet["LocalId"]]["Content"])
+                        if edit_snippet != prev_edit_snippet:
+                            local_id = snippet["LocalId"]
+                            # This try is in the event that the change is a pure addition and there is no previous
+                            try:
+                                # Check if we are at the first block
+                                if local_id != 1:
+                                    before.append(str(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id - 1)]["Content"]))
+                                before.append(prev_edit_snippet)
+                                # This try is for the case that the local_id is the last block
+                                try:
+                                    before.append(str(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id + 1)]["Content"]))
+                                except:
+                                    pass
+                            except:
+                                pass
+
+                            after.append(str(edit_snippets.loc[edit_snippets["LocalId"] == (local_id - 1)]["Content"]))
+                            after.append(edit_snippet)
+                            after.append(str(edit_snippets.loc[edit_snippets["LocalId"] == (local_id + 1)]["Content"]))
+
+                    pair["Before"] = '\n'.join(before)
+                    pair["After"] = '\n'.join(after)
             pair["Confirmed"] = int(row["Confirmed"]) if "Confirmed" in row and not pd.isnull(row["Confirmed"]) else ""
             pair["Useful"] = int(row["Useful"]) if "Useful" in row and not pd.isna(row["Useful"]) else ""
             pair["Tangled"] = int(row["Tangled"]) if "Tangled" in row and not pd.isna(row["Tangled"]) else ""
