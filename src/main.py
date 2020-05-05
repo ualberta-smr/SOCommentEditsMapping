@@ -49,8 +49,7 @@ def get_data(conn):
                                  + create_subquery() + "));",
                                  conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_questions = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' AND PostId IN ("
-                                     "SELECT DISTINCT ParentId FROM EditHistory WHERE PostId IN ("
-                                     + create_subquery() + "));",
+                                     + create_subquery() + ");",
                                      conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
 
     return df_questions, df_answers, df_comments, df_edits
