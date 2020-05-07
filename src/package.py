@@ -48,27 +48,27 @@ def package(db_conn, results_file):
                     after = []
                     # TODO: May have to loop through all prev_edit_snippets too in case of deletion
                     for snip_index, snippet in edit_snippets.iterrows():
-                        edit_snippet = str(snippet["Content"])
-                        prev_edit_snippet = str(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == snippet["LocalId"]]["Content"])
+                        edit_snippet = str(getattr(snippet, "Content"))
+                        prev_edit_snippet = str(getattr(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == snippet["LocalId"]], "Content"))
                         if edit_snippet != prev_edit_snippet:
                             local_id = snippet["LocalId"]
                             # This try is in the event that the change is a pure addition and there is no previous
                             try:
                                 # Check if we are at the first block
                                 if local_id != 1:
-                                    before.append(str(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id - 1)]["Content"]))
+                                    before.append(str(getattr(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id - 1)], "Content")))
                                 before.append(prev_edit_snippet)
                                 # This try is for the case that the local_id is the last block
                                 try:
-                                    before.append(str(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id + 1)]["Content"]))
+                                    before.append(str(getattr(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id + 1)], "Content")))
                                 except:
                                     pass
                             except:
                                 pass
 
-                            after.append(str(edit_snippets.loc[edit_snippets["LocalId"] == (local_id - 1)]["Content"]))
+                            after.append(str(getattr(edit_snippets.loc[edit_snippets["LocalId"] == (local_id - 1)], "Content")))
                             after.append(edit_snippet)
-                            after.append(str(edit_snippets.loc[edit_snippets["LocalId"] == (local_id + 1)]["Content"]))
+                            after.append(str(getattr(edit_snippets.loc[edit_snippets["LocalId"] == (local_id + 1)], "Content")))
 
                     pair["Before"] = '\n'.join(before)
                     pair["After"] = '\n'.join(after)
