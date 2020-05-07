@@ -34,7 +34,7 @@ def package(db_conn, results_file):
             pair["Comment"] = str(row["Comment"])
 
             # PostHistoryId is the EventId
-            query = "SELECT PostHistoryId, LocalId, Content FROM PostBlockVersion WHERE PostId = {} ORDER BY PostHistoryId;".format(answer_id)
+            query = "SELECT PostHistoryId, RootLocalId, GROUP_CONCAT(Content, '\n') AS Text FROM PostBlockVersion WHERE PostBlockTypeId = 2 AND PostId = {} GROUP BY PostHistoryId, RootLocalId ORDER BY PostHistoryId;".format(answer_id)
             edits = pd.read_sql_query(query, db_conn)
             for edit_index, edit in edits.iterrows():
                 if edit["PostHistoryId"] == edit_id:
@@ -42,33 +42,28 @@ def package(db_conn, results_file):
                     edit_snippets = edits.loc[edits["PostHistoryId"] == edit_id]
                     prev_edit_snippets = edits.loc[edits["PostHistoryId"] == prev_edit_id]
 
-                    # TODO: Loop through all the snippets in the previous edit and the current edit
-                    # Sometimes they do not have the same number of snippets (Use localId for matching)
                     before = []
                     after = []
-                    # TODO: May have to loop through all prev_edit_snippets too in case of deletion
-                    for snip_index, snippet in edit_snippets.iterrows():
-                        edit_snippet = str(getattr(snippet, "Content").array[0])
-                        prev_edit_snippet = str(getattr(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == snippet["LocalId"]], "Content").array[0])
-                        if edit_snippet != prev_edit_snippet:
-                            local_id = snippet["LocalId"]
-                            # This try is in the event that the change is a pure addition and there is no previous
-                            try:
-                                # Check if we are at the first block
-                                if local_id != 1:
-                                    before.append(str(getattr(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id - 1)], "Content").array[0]))
-                                before.append(prev_edit_snippet)
-                                # This try is for the case that the local_id is the last block
-                                try:
-                                    before.append(str(getattr(prev_edit_snippets.loc[prev_edit_snippets["LocalId"] == (local_id + 1)], "Content").array[0]))
-                                except:
-                                    pass
-                            except:
-                                pass
+                    for _, edit_snippet in edit_snippets.iterrows():
+                        local_id = edit_snippet["RootLocalId"]
+                        try:
+                            # There may be no prev_snippet if it is a straight addition
+                            prev_snippet = prev_edit_snippets.loc[prev_edit_snippets["RootLocalId"] == local_id]
+                            if prev_snippet["Text"] != edit_snippet["Text"]:
+                                before.append(prev_snippet["Text"])
+                                after.append(edit_snippet["Text"])
+                        except:
+                            after.append(edit_snippet["Text"])
 
-                            after.append(str(getattr(edit_snippets.loc[edit_snippets["LocalId"] == (local_id - 1)], "Content").array[0]))
-                            after.append(edit_snippet)
-                            after.append(str(getattr(edit_snippets.loc[edit_snippets["LocalId"] == (local_id + 1)], "Content").array[0]))
+                    for _, prev_snippet in prev_edit_snippets.iteerrows():
+                        local_id = prev_snippet["RootLocalId"]
+                        try:
+                            edit_snippet = edit_snippets.loc[edit_snippets["RootLocalId"] == local_id]
+                            if prev_snippet["Text"] != edit_snippet["Text"]:
+                                before.append(prev_snippet["Text"])
+                                after.append(edit_snippet["Text"])
+                        except:
+                            before.append(prev_snippet["Text"])
 
                     pair["Before"] = '\n'.join(before)
                     pair["After"] = '\n'.join(after)
