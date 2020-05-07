@@ -3,7 +3,7 @@ import json
 
 
 def package(db_conn, results_file):
-    results = pd.read_csv(results_file)
+    results = pd.read_csv(results_file, low_memory=False)
 
     pairs = []
     pair = {

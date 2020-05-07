@@ -5,7 +5,7 @@ import numpy as np
 
 def evaluate():
     ground_truth = pd.read_csv('data/ground_truth.csv', index_col=False)
-    results = pd.read_csv('results.csv')
+    results = pd.read_csv('results.csv', low_memory=False)
 
     true_positives = 0
     marked_positives = 0
