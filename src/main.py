@@ -3,7 +3,7 @@ import sqlite3
 import time
 import pandas as pd
 
-from generate import generate_result_stats, generate_simple_csvs, generate_stat_csv
+from generate import generate_result_stats, generate_simple_csvs, generate_stat_csv, get_tags
 from processor import Processor
 from evaluate import evaluate
 from package import package
@@ -26,12 +26,31 @@ def setup_sqlite(conn):
     c.close()
 
 
+def create_subquery():
+    tags = get_tags()
+    sub_query = "SELECT DISTINCT PostId FROM EditHistory WHERE Tags LIKE '%{}%'".format(tags[0])
+    for tag in tags[1:]:
+        sub_query += " OR Tags LIKE '%{}%'".format(tag)
+    return sub_query
+
+
 def get_data(conn):
 
-    df_answers = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'InitialBody';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_comments = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'Comment';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_edits = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'BodyEdit';", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_questions = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' AND PostId IN (SELECT DISTINCT ParentId FROM EditHistory WHERE PostId IN (SELECT PostId from EditHistory_Code));", conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_answers = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'InitialBody' AND PostId IN ("
+                                   "SELECT DISTINCT PostId FROM EditHistory WHERE ParentId IN ("
+                                   + create_subquery() + "));",
+                                   conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_comments = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'Comment' AND PostId IN ("
+                                    "SELECT DISTINCT PostId FROM EditHistory WHERE ParentId IN ("
+                                    + create_subquery() + "));",
+                                    conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_edits = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'BodyEdit' AND PostId IN ("
+                                 "SELECT DISTINCT PostId FROM EditHistory WHERE ParentId IN ("
+                                 + create_subquery() + "));",
+                                 conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+    df_questions = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' AND PostId IN ("
+                                     + create_subquery() + ");",
+                                     conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
 
     return df_questions, df_answers, df_comments, df_edits
 
@@ -78,8 +97,11 @@ def main():
     parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
     parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="t")
     parser.add_argument("--user", "-u", help="Allow commenters to also be editors: True, False", type=str, default="f")
-    parser.add_argument("--naive", "-n", help="Naively pair comments and edits by time: True, False", type=str, default="f")
-    parser.add_argument("--eval", "-e", help="Evaluate the program against a ground truth (provide ground_truth.csv): True, False", type=str, default="f")
+    parser.add_argument("--naive", "-n", help="Naively pair comments and edits by time: True, False",
+                        type=str, default="f")
+    parser.add_argument("--eval", "-e",
+                        help="Evaluate the program against a ground truth (provide ground_truth.csv): True, False",
+                        type=str, default="f")
     parser.add_argument("--pack", "-p", help="Package the results into JSON format: <filename>.csv", type=str)
 
     arg_type = parser.parse_args().type.lower()

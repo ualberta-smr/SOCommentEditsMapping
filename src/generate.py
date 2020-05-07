@@ -25,7 +25,7 @@ def find_tags(tags):
 
 # Generate different Result statistics based on Tag
 def generate_result_stats():
-    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"])
+    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"], low_memory=False)
 
     data = data.loc[pd.isnull(data["EditGroups(EditIndex,MatchedGroups)"]) == False]
 
@@ -113,7 +113,7 @@ def generate_result_stats():
 
 
 def generate_simple_csvs():
-    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"])
+    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"], low_memory=False)
     data = data.loc[pd.isnull(data["EditGroups(EditIndex,MatchedGroups)"]) == False]
 
     tags = get_tags()
@@ -133,7 +133,7 @@ def generate_simple_csvs():
 
 
 def generate_stat_csv():
-    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"])
+    data = pd.read_csv('results.csv', index_col=False, parse_dates=["CommentDate", "EditDate"], low_memory=False)
     data = data.loc[pd.isnull(data["EditGroups(EditIndex,MatchedGroups)"]) == False]
 
     with open("cat_stats.csv", "w", newline='') as file:
