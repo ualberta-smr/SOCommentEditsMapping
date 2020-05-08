@@ -94,33 +94,33 @@ def stats():
 
 def main():
     parser = argparse.ArgumentParser(description="SOTorrent - Comment Induced Updates")
-    parser.add_argument("--type", "-t", help="Type of Analysis: Full, Stats", type=str, default="full")
-    parser.add_argument("--clean", "-c", help="Make SQL Tables: True, False", type=str, default="t")
-    parser.add_argument("--user", "-u", help="Allow commenters to also be editors: True, False", type=str, default="f")
-    parser.add_argument("--naive", "-n", help="Naively pair comments and edits by time: True, False",
-                        type=str, default="f")
-    parser.add_argument("--eval", "-e",
-                        help="Evaluate the program against a ground truth (provide ground_truth.csv): True, False",
-                        type=str, default="f")
-    parser.add_argument("--pack", "-p", help="Package the results into JSON format: <filename>.csv", type=str)
+    parser.add_argument("--stage", "-s", help="Stage of Analysis: FULL, STATS, NAIVE, EVAL, PACK", type=str, nargs="+")
+    parser.add_argument("--clean", "-c", help="(Re)Make SQL Tables: True, False", type=str, default="T")
+    parser.add_argument("--user", "-u", help="Allow commenters to also be editors: True, False", type=str, default="F")
 
-    arg_type = parser.parse_args().type.lower()
-
-    if parser.parse_args().eval.lower()[:1] == "t":
+    arg_stage = parser.parse_args().stage[0].upper().strip() if parser.parse_args().stage else None
+    if arg_stage is None:
+        print("Please specify a stage")
+    elif arg_stage == "FULL":
+        arg_clean = True if parser.parse_args().clean.upper().strip()[:1] == "T" else False
+        arg_filter_user = True if parser.parse_args().user.upper().strip()[:1] == "F" else False
+        full(arg_clean, arg_filter_user, False)
+    elif arg_stage == "STATS":
+        stats()
+    elif arg_stage == "NAIVE":
+        arg_clean = True if parser.parse_args().clean.upper().strip()[:1] == "T" else False
+        arg_filter_user = True if parser.parse_args().user.upper().strip()[:1] == "F" else False
+        full(arg_clean, arg_filter_user, True)
+    elif arg_stage == "EVAL":
         evaluate()
-    elif parser.parse_args().pack and parser.parse_args().pack.lower()[-3:] == "csv":
-        conn = sqlite3.connect("sotorrent.sqlite3")
-        package(conn, parser.parse_args().pack.lower())
-        conn.close()
-    else:
-        if arg_type == "full":
-            arg_clean = True if parser.parse_args().clean.lower()[:1] == "t" else False
-            arg_filter_user = True if parser.parse_args().user.lower()[:1] == "f" else False
-            arg_naive = True if parser.parse_args().naive.lower()[:1] == "t" else False
-
-            full(arg_clean, arg_filter_user, arg_naive)
-        elif arg_type == "stats":
-            stats()
+    elif arg_stage == "PACK":
+        try:
+            csv = parser.parse_args().stage[1]
+            conn = sqlite3.connect("sotorrent.sqlite3")
+            package(conn, csv)
+            conn.close()
+        except IndexError:
+            print("Please provide a CSV to pack into JSON")
 
 
 main()
