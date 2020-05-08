@@ -74,7 +74,7 @@ eh.UserName,
 eh.CreationDate, 
 eh.Tags, 
 eh.Score, 
-GROUP_CONCAT(pbv.Content, '') AS Text 
+GROUP_CONCAT(pbv.Content, '\n') AS Text 
 FROM PostBlockVersion pbv JOIN EditHistory eh ON eh.EventId = pbv.PostHistoryId 
 WHERE eh.PostTypeId = 2 
 AND pbv.PostBlockTypeId = 2 

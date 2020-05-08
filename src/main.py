@@ -108,7 +108,7 @@ def main():
 
     if parser.parse_args().eval.lower()[:1] == "t":
         evaluate()
-    elif parser.parse_args().pack.lower()[-3:] == "csv":
+    elif parser.parse_args().pack and parser.parse_args().pack.lower()[-3:] == "csv":
         conn = sqlite3.connect("sotorrent.sqlite3")
         package(conn, parser.parse_args().pack.lower())
         conn.close()
