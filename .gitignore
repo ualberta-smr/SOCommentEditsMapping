@@ -7,3 +7,4 @@ sotorrent*
 *.txt
 *.cache/
 *.log
+*.sqlite3*

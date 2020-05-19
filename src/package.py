@@ -24,7 +24,11 @@ def package(db_conn, results_file):
     for _, row in results.iterrows():
         # Only make entries for matched pairs
         if not pd.isna(row["EditId"]):
-            pair["Question Id"] = int(row["QuestionId"])
+            # Sometimes we do not have a question id
+            try:
+                pair["Question Id"] = int(row["QuestionId"])
+            except:
+                pair["Question Id"] = None
             answer_id = int(row["AnswerId"])
             pair["Answer Id"] = answer_id
             pair["Tags"] = row["Tags"]
