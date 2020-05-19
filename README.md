@@ -92,7 +92,7 @@ To import the csvs into an sqlite3 database follow the steps in the **Importing*
 
         This table is the aggregation of all questions, answers, and their histories and comments. This table is used predominantly for the creation of the EditHistory_Code table, but is also used to retrieve the question id.
     
-Additionally, the `PostBlockVersion.csv`, `PostHistory.csv`, `Posts.csv`, `PostVersion.csv`, and `Users.csv` files are provided if you wish to create the `EditHistory` and `EditHistory_Code` tables without wanting to download the entire SOTorrent dump.
+    Additionally, the `PostBlockVersion.csv`, `PostHistory.csv`, `Posts.csv`, `PostVersion.csv`, and `Users.csv` files are provided if you wish to create the `EditHistory` and `EditHistory_Code` tables without wanting to download the entire SOTorrent dump.
 
 2. The `results` directory contains the results of running the program on each tag separately:
 
@@ -138,6 +138,13 @@ Additionally, the `PostBlockVersion.csv`, `PostHistory.csv`, `Posts.csv`, `PostV
         
 5. The `pull_requests.csv` file contains the details of the 15 comment-edit pairs we used to make pull requests on open source repositories. The file details which part of the edit was used as well as how the comment was paraphrased (if it was) on the pull request. The links to the repositories and pull requests have also been provided.
 
+Example JSONs are provided in the data directory. There are three example JSONs:
+
+1. `results.json` which is uploaded [here](https://drive.google.com/file/d/17idi6dZA2CbHR39tVib7b3oWgQIC0f2Z/view?usp=sharing) because the file size exceeds GitHub's limit, is the entire results of running the program on all five tags in JSON format provided as convenience for anyone that wants to use the results as JSON rather than a CSV.
+
+2. `general_precision_confirmed_results.json` is the json of only confirmed pairs of the subset of all five tags that we used to calculate the general precision of the program.
+
+3. `example-results.json` is a JSON containing the results of a single answer for anyone to get used to the format of the JSONs provided.
 ## Importing
 
 To import csvs into an sqlite3 database follow these steps:
