@@ -138,7 +138,7 @@ To import the csvs into an sqlite3 database follow the steps in the **Importing*
         
 5. The `pull_requests.csv` file contains the details of the 15 comment-edit pairs we used to make pull requests on open source repositories. The file details which part of the edit was used as well as how the comment was paraphrased (if it was) on the pull request. The links to the repositories and pull requests have also been provided.
 
-Example JSONs are provided in the data directory. There are three example JSONs:
+Example JSONs are provided in the data directory. In the wiki there is a [page](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/How-to-use-the-JSON-packaging) that details the fields in the JSON objects and an idea of how the JSON file may be used. There are three example JSONs:
 
 1. `results.json` which is uploaded [here](https://drive.google.com/file/d/17idi6dZA2CbHR39tVib7b3oWgQIC0f2Z/view?usp=sharing) because the file size exceeds GitHub's limit, is the entire results of running the program on all five tags in JSON format provided as convenience for anyone that wants to use the results as JSON rather than a CSV.
 
