@@ -8,6 +8,7 @@ from regex_patterns import find_groups
 from regex_patterns import find_mentions
 from regex_patterns import find_code
 from fuzzywuzzy import fuzz
+import configparser
 
 
 class Processor:
@@ -19,6 +20,9 @@ class Processor:
         self.edits = df_edits
         self.filter_user = filter_user
         self.naive = naive
+
+        self.__config = configparser.ConfigParser()
+        self.__config.read("src/config.ini")
 
         self.stats = []
         self.total_marked_updates = 0
@@ -212,12 +216,11 @@ class Processor:
 
     # Can not simply take the intersection because sometimes the code is not exact
     # eg. off by a space
-    @staticmethod
-    def find_matches(list1, list2):
+    def find_matches(self, list1, list2):
         matches = list()
         for match1 in list1:
             for match2 in list2:
-                if fuzz.ratio(match1, match2) > 90:
+                if fuzz.ratio(match1, match2) > self.__config["PARSER"]["Threshold"]:
                     matches.append(match1)
                     break
         return matches
