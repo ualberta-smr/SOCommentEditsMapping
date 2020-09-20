@@ -220,7 +220,7 @@ class Processor:
         matches = list()
         for match1 in list1:
             for match2 in list2:
-                if fuzz.ratio(match1, match2) > int(self.__config["PARSER"]["Threshold"]):
+                if fuzz.ratio(match1, match2) >= int(self.__config["PARSER"]["Threshold"]):
                     matches.append(match1)
                     break
         return matches
