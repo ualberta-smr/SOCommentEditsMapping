@@ -3,12 +3,13 @@ import csv
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+import configparser
 
 
 def get_tags():
-    with open("src/tags.cfg") as f:
-        tags = f.read().splitlines()
-    return tags
+    config = configparser.ConfigParser()
+    config.read("src/config.ini")
+    return [tag.strip() for tag in config["TAGS"]["Tags"].split(",")]
 
 
 # The tags argument is a string containing the tags on a question

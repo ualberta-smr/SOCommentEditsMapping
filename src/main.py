@@ -28,7 +28,7 @@ def setup_sqlite(conn):
 
 def create_subquery():
     tags = get_tags()
-    sub_query = "SELECT DISTINCT PostId FROM EditHistory WHERE Tags LIKE '%{}%'".format(tags[0])
+    sub_query = "SELECT DISTINCT PostId FROM EditHistory_Code WHERE Tags LIKE '%{}%'".format(tags[0])
     for tag in tags[1:]:
         sub_query += " OR Tags LIKE '%{}%'".format(tag)
     return sub_query
@@ -37,18 +37,18 @@ def create_subquery():
 def get_data(conn):
 
     df_answers = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'InitialBody' AND PostId IN ("
-                                   "SELECT DISTINCT PostId FROM EditHistory WHERE ParentId IN ("
+                                   "SELECT DISTINCT PostId FROM EditHistory_Code WHERE ParentId IN ("
                                    + create_subquery() + "));",
                                    conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_comments = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'Comment' AND PostId IN ("
-                                    "SELECT DISTINCT PostId FROM EditHistory WHERE ParentId IN ("
+                                    "SELECT DISTINCT PostId FROM EditHistory_Code WHERE ParentId IN ("
                                     + create_subquery() + "));",
                                     conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
     df_edits = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'BodyEdit' AND PostId IN ("
-                                 "SELECT DISTINCT PostId FROM EditHistory WHERE ParentId IN ("
+                                 "SELECT DISTINCT PostId FROM EditHistory_Code WHERE ParentId IN ("
                                  + create_subquery() + "));",
                                  conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-    df_questions = pd.read_sql_query("SELECT * FROM EditHistory WHERE Event = 'InitialBody' AND PostId IN ("
+    df_questions = pd.read_sql_query("SELECT * FROM EditHistory_Code WHERE Event = 'InitialBody' AND PostId IN ("
                                      + create_subquery() + ");",
                                      conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
 

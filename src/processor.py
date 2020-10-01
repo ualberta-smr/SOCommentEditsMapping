@@ -8,6 +8,7 @@ from regex_patterns import find_groups
 from regex_patterns import find_mentions
 from regex_patterns import find_code
 from fuzzywuzzy import fuzz
+import configparser
 
 
 class Processor:
@@ -19,6 +20,9 @@ class Processor:
         self.edits = df_edits
         self.filter_user = filter_user
         self.naive = naive
+
+        self.__config = configparser.ConfigParser()
+        self.__config.read("src/config.ini")
 
         self.stats = []
         self.total_marked_updates = 0
@@ -155,7 +159,7 @@ class Processor:
                         edit_date = getattr(edit, "CreationDate")
                         self.comments_per_edit[edit_id] += 1
                         # This code requires running sqlite3 V3.25 or higher
-                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(
+                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory_Code WHERE Event <> 'Comment' AND PostId = {};".format(
                             answer_id)
                         edit_ids = pd.read_sql_query(query, self.conn,
                                                      parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
@@ -188,7 +192,7 @@ class Processor:
                             edit_date = getattr(edit, "CreationDate")
                             self.comments_per_edit[edit_id] += 1
                             # This code requires running sqlite3 V3.25 or higher
-                            query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
+                            query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory_Code WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
                             edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
                             edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
                             relevant_code_matches.append((edit_index, matches))
@@ -212,12 +216,11 @@ class Processor:
 
     # Can not simply take the intersection because sometimes the code is not exact
     # eg. off by a space
-    @staticmethod
-    def find_matches(list1, list2):
+    def find_matches(self, list1, list2):
         matches = list()
         for match1 in list1:
             for match2 in list2:
-                if fuzz.ratio(match1, match2) > 90:
+                if fuzz.ratio(match1, match2) >= int(self.__config["PARSER"]["Threshold"]):
                     matches.append(match1)
                     break
         return matches
