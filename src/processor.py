@@ -159,9 +159,12 @@ class Processor:
                         edit_date = getattr(edit, "CreationDate")
                         self.comments_per_edit[edit_id] += 1
                         # This code requires running sqlite3 V3.25 or higher
-                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
-                        edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
-                        edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
+                        query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory_Code WHERE Event <> 'Comment' AND PostId = {};".format(
+                            answer_id)
+                        edit_ids = pd.read_sql_query(query, self.conn,
+                                                     parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
+                        edit_index = int(
+                            edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
                         relevant_code_matches.append((edit_index, comment_groups))
                         # Otherwise use this
                         # relevant_code_matches.append((edit_id, comment_groups))
@@ -189,7 +192,7 @@ class Processor:
                             edit_date = getattr(edit, "CreationDate")
                             self.comments_per_edit[edit_id] += 1
                             # This code requires running sqlite3 V3.25 or higher
-                            query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
+                            query = "SELECT Event, EventId, ROW_NUMBER() OVER (ORDER BY CreationDate) RowNum, CreationDate FROM EditHistory_Code WHERE Event <> 'Comment' AND PostId = {};".format(answer_id)
                             edit_ids = pd.read_sql_query(query, self.conn, parse_dates={"CreationDate": "%Y-%m-%d %H:%M:%S"})
                             edit_index = int(edit_ids[edit_ids["EventId"] == edit_id][["RowNum"]].to_string(index=False, header=False))
                             relevant_code_matches.append((edit_index, matches))
@@ -217,7 +220,7 @@ class Processor:
         matches = list()
         for match1 in list1:
             for match2 in list2:
-                if fuzz.ratio(match1, match2) > int(self.__config["PARSER"]["Threshold"]):
+                if fuzz.ratio(match1, match2) >= int(self.__config["PARSER"]["Threshold"]):
                     matches.append(match1)
                     break
         return matches

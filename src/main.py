@@ -28,7 +28,7 @@ def setup_sqlite(conn):
 
 def create_subquery():
     tags = get_tags()
-    sub_query = "SELECT DISTINCT PostId FROM EditHistory WHERE Tags LIKE '%{}%'".format(tags[0])
+    sub_query = "SELECT DISTINCT PostId FROM EditHistory_Code WHERE Tags LIKE '%{}%'".format(tags[0])
     for tag in tags[1:]:
         sub_query += " OR Tags LIKE '%{}%'".format(tag)
     return sub_query
