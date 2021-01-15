@@ -11,17 +11,13 @@ For the exact code and results used in the EMSE submission, please check the [em
     * SQL scripts to create the EditHistory and EditHistory_Code tables
     * Python scripts to run the matching algorithms and data processing
     * Test code for checking validity
-* CSV, Json, and PNG files of data or results of this project.
-    * The ground truth of 100 comment-edit pairs in CSV format (`ground_truth.csv`)
-    * The pull request information (`pull_requests.csv`)
-    * The fuzzy matching threshold comparison (`threshold_comparison.csv`)
-    * An example of the Json output produced by the scripts for future anticipated tooling and the Json output of the 1,910 statistically representative comment-edit pairs used in the paper. (`example_results.json`, `general_precision.json`)
-    * Two PNG images providing visuals for number of answers per number of comments or edits
+* CSV, Json, and PNG files of the data and/or results of the project.
+    * Which is described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory)
 * Instructions for the dependencies and running the scripts are in this README
-* [Wiki pages](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki) that detail information:
-    * About the regular expression patterns
-    * About the SQL scripts and running them in SQLite
-    * About the Results and using the Json output
+* [Wiki pages](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki) that detail information such as:
+    * Information about the [regular expression patterns](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Regex-Patterns)
+    * Information about the [SQL scripts and running them in SQLite](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/SQL-Scripts-and-Importing)
+    * Information about the [Results and using the Json output](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Results)
 
 
 # Instructions
@@ -84,22 +80,6 @@ This program has multiple command line options:
 `--user` or `-u` has two values: `True` or `False`
 * `True` allows comments and edits to be matched by the same author. i.e., if a user makes a comment and then makes the edit themselves. 
 * `False` is the **default** value for this option. We found that generally comments and edits with the same author that are matched do not tend to be useful. Therefore to reduce the amount of noise we set this option default False.
-
-## Regular expression patterns
-
-The list of regular expression patterns are listed [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Regex-Patterns) as well as in the source code [here](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/src/regex_patterns.py).
-
-## SQL scripts and Importing
-
-Information regarding the SQL scripts and importing can be found [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/SQL-Scripts-and-Importing).
-
-## Data directory
-
-Information regarding the data directory of the repo can be found [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory).
-
-## Results
-
-Information regarding the results of the project can be found [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Results).
 
 # Contributors
 
