@@ -4,17 +4,17 @@ We investigate the nature of the extracted comment-edit pairs to determine if th
 At a high level, our automated approach matches a comment to an edit if the comment occurred before the edit and the comment mentions a code term that gets added to or removed from a code snippet in the edit 
 For a full description of this work, please see our accepted EMSE Submission titled "On Using Stack Overflow Comment-Edit Pairs to recommend code maintenance changes" by Henry Tang and Sarah Nadi. A preprint is available on Arxiv: [https://arxiv.org/abs/2004.08378]( https://arxiv.org/abs/2004.08378).
 
-This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags (`Java`, `Javascript`, `Android`, `Php`, and `Python`). For the exact code and results used in the EMSE paper, please check the [emseOctober2020submission](https://github.com/ualberta-smr/SOCommentEditsMapping/tree/emseOctober2020submission) tag.
+This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags (`Java`, `Javascript`, `Android`, `Php`, and `Python`). We use data from SOTorrent for this work. For the exact code and results used in the EMSE paper, please check the [emseOctober2020submission](https://github.com/ualberta-smr/SOCommentEditsMapping/tree/emseOctober2020submission) tag.
 
 
 # What is in this repo:
 
-* The source code of scripts for the project
-    * SQL scripts to create the EditHistory and EditHistory_Code tables
+* The source code of the scripts used as follows:
+    * SQL scripts to create the `EditHistory` and `EditHistory_Code` tables
     * Python scripts to run the matching algorithms and data processing
     * Test code for checking validity
-* CSV, Json, and PNG files of the data and/or results of the project.
-    * Which is described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory)
+* CSV, Json, and PNG files of the data and/or results for the five analyzed tags
+    * The details are described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory)
 * Instructions for the dependencies and running the scripts are in this README
 * [Wiki pages](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki) that detail information such as:
     * Information about the [regular expression patterns](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Regex-Patterns)
