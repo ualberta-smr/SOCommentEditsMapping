@@ -1,9 +1,11 @@
 # Overview
 This project analyzes crowd-sourced answers on Stack Overflow to determine a relationship between comments and edits on an answer. 
-It does this by looping through the comments and edits on an answer and uses regular expressions to identify common code terms in order to determine whether a comment caused an edit. 
-This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags (`Java`, `Javascript`, `Android`, `Php`, and `Python`) as per our EMSE Submission titled "On Using Stack Overflow Comment-Edit Pairs to recommend code maintenance changes" by Henry Tang and Sarah Nadi. 
-Available here on Arxiv: https://arxiv.org/abs/2004.08378.
-For the exact code and results used in the EMSE submission, please check the [emseOctober2020submission](https://github.com/ualberta-smr/SOCommentEditsMapping/tree/emseOctober2020submission) tag.
+We investigate the nature of the extracted comment-edit pairs to determine if they can be used to construct code maintenance data sets.
+At a high level, our automated approach matches a comment to an edit if the comment occurred before the edit and the comment mentions a code term that gets added to or removed from a code snippet in the edit 
+For a full description of this work, please see our accepted EMSE Submission titled "On Using Stack Overflow Comment-Edit Pairs to recommend code maintenance changes" by Henry Tang and Sarah Nadi. A preprint is available on Arxiv: [https://arxiv.org/abs/2004.08378]( https://arxiv.org/abs/2004.08378).
+
+This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags (`Java`, `Javascript`, `Android`, `Php`, and `Python`). For the exact code and results used in the EMSE paper, please check the [emseOctober2020submission](https://github.com/ualberta-smr/SOCommentEditsMapping/tree/emseOctober2020submission) tag.
+
 
 # What is in this repo:
 
