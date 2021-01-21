@@ -14,12 +14,12 @@ This repository contains the source code for matching comments to edits, as well
     * Python scripts to run the matching algorithms and data processing
     * Test code for checking validity
 * CSV, Json, and PNG files of the data and/or results for the five analyzed tags
-    * The details are described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory)
+    * The details are described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory) and in the `doc` directory [here](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc)
 * Instructions for the dependencies and running the scripts are in this README
-* [Wiki pages](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki) that detail information such as:
-    * Information about the [regular expression patterns](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Regex-Patterns)
-    * Information about the [SQL scripts and running them in SQLite](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/SQL-Scripts-and-Importing)
-    * Information about the [Results and using the Json output](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Results)
+* [Wiki pages](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki) and [docs](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc) that detail information such as:
+    * Information about the regular expression patterns in the [wiki](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Regex-Patterns) and [docs](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc/regex_patterns.md)
+    * Information about the SQL scripts and running them in SQLite in the [wiki](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/SQL-Scripts-and-Importing) and [docs](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc/sql_importing.md)
+    * Information about the Results and using the Json output in the [wiki](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Results) and [docs](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc/results.md)
 
 
 # Instructions
@@ -80,7 +80,7 @@ This program has multiple command line options:
 * `Eval` tells the program to evaluate itself against a given `ground_truth.csv`.  
     * The program will take this `ground_truth.csv` and compare it with the `results.csv` that is generated in the root folder after successfully running the analysis. If there are answer IDs in the `ground_truth.csv` that are not found in the `results.csv` a note will be printed to stdout detailing which answer IDs were not found. 
     * Note that if this flag is set to `True`, the program will only run the ground truth evaluation and will not run any other parts of the program (this uses the comment-edit pairs in the `results.csv` from a previous complete analysis under the `EditGroups...` column and does not re-match pairs)
-    * If you want to create a `results.csv` with only the IDs in the `ground_truth.csv`. Then replace the `get_data` method of `main.py` with the ground truth replacement [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Hardcoded-replacements).
+    * If you want to create a `results.csv` with only the IDs in the `ground_truth.csv`. Then replace the `get_data` method of `main.py` with the ground truth replacement in the [wiki](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Hardcoded-replacements) or [docs](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc/hardcoded_replacements.md).
 * `Pack` takes a CSV with the same columns as `results.csv` and packages it into a JSON file. 
   * The CSV requires the *QuestionId*, *AnswerId*, *Tags*, *CommentId*, *EditId*, and *Comment* columns, with optional columns *Confirmed*, *Useful*, *Tangled*, and *Category*. Columns *Confirmed*, *Useful*, *Tangled* are expected to be either 1 (true) or 0 (false). 
   * This command also requires the `sotorrent.sqlite3` database in the root directory of the project.
