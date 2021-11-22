@@ -13,6 +13,7 @@ This repository contains the source code for matching comments to edits, as well
     * SQL scripts to create the `EditHistory` and `EditHistory_Code` tables
     * Python scripts to run the matching algorithms and data processing
     * Test code for checking validity
+* Link to the required database tables with data [here](https://drive.google.com/file/d/1oeCrZSWLq-JIlVoEXwUlQKJDzzyFk1oK/view?usp=sharing)
 * CSV, Json, and PNG files of the data and/or results for the five analyzed tags
     * The details are described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory) and in the `doc` directory [here](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc)
 * Instructions for the dependencies and running the scripts are in this README
