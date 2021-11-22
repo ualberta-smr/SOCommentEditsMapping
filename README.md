@@ -39,6 +39,8 @@ We used existing scripts from the [sotorrent-sqlite3 GitHub repo](https://github
 
 * `main.py` is what is used to create an sqlite database called *sotorrent.sqlite3* and populate it with the data in the SOTorrent dump. Note that this process takes ~2 days.
 
+If you do not want to create the SQLite database yourself then we provide a link to download the tables necessary for the program to run (with data) [here](https://drive.google.com/file/d/1oeCrZSWLq-JIlVoEXwUlQKJDzzyFk1oK/view?usp=sharing).
+
 The program requires the following Python libraries:
 * [Pandas](https://pandas.pydata.org/) v0.24.2
 * [Matplotlib](https://matplotlib.org/) v3.1.0
