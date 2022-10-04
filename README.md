@@ -1,7 +1,7 @@
 # Overview
 This project analyzes crowd-sourced answers on Stack Overflow to determine a relationship between comments and edits on an answer. 
 We investigate the nature of the extracted comment-edit pairs to determine if they can be used to construct code maintenance data sets.
-At a high level, our automated approach matches a comment to an edit if the comment occurred before the edit and the comment mentions a code term that gets added to or removed from a code snippet in the edit 
+At a high level, our automated approach matches a comment to an edit if the comment occurred before the edit and the comment mentions a code term that gets added to or removed from a code snippet in the edit.
 For a full description of this work, please see our accepted EMSE Submission titled "On Using Stack Overflow Comment-Edit Pairs to recommend code maintenance changes" by Henry Tang and Sarah Nadi. A preprint is available on Arxiv: [https://arxiv.org/abs/2004.08378]( https://arxiv.org/abs/2004.08378).
 
 This repository contains the source code for matching comments to edits, as well as our results of analyzing five Stack Overflow tags (`Java`, `Javascript`, `Android`, `Php`, and `Python`). We use data from SOTorrent for this work. For the exact code and results used in the EMSE paper, please check the `v1.0` release.
