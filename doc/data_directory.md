@@ -16,7 +16,7 @@ The data directory of this repository contains seven files.
     
 * `ground_truth.csv`
 
-    * This CSV file is the 100 answers (20 from Java, JavaScript, Android, Php, and Python) used in the ground truth of the paper. However, this file has less information compared to the files in the `ground_truth` directory of the [results zip](https://drive.google.com/file/d/1ro1N1PuxlHeE_GI7-gRPiIleRKb1Dg7D/view?usp=sharing). This is because only these columns are used for the `eval` command line option of the program. Note that the `eval` command line option only evaluates the `results.csv` based on the answer ids and comment ids in the `ground_truth.csv`.
+    * This CSV file is the 100 answers (20 from Java, JavaScript, Android, Php, and Python) used in the ground truth of the paper. However, this file has less information compared to the files in the `ground_truth` directory of the [results zip]([https://drive.google.com/file/d/1ro1N1PuxlHeE_GI7-gRPiIleRKb1Dg7D/view?usp=sharing](https://zenodo.org/records/13952250)). This is because only these columns are used for the `eval` command line option of the program. Note that the `eval` command line option only evaluates the `results.csv` based on the answer ids and comment ids in the `ground_truth.csv`.
 
     * The `ground_truth.csv` contains four columns: `AnswerIds`, `CommentIds`, `EditIds`, and `Useful`. `AnswerIds` are the post ids of the answers to evaluate. `CommentIds` are the ids of the comments on each answer. `EditIds` are the manual evaluations of which comments and edits are paired. `Useful` is a column containing the manual evaluations of whether the comment-edit pair is useful. If useful, this is denoted by the word `yes`.
     
