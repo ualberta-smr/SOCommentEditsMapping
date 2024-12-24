@@ -13,7 +13,7 @@ This repository contains the source code for matching comments to edits, as well
     * SQL scripts to create the `EditHistory` and `EditHistory_Code` tables
     * Python scripts to run the matching algorithms and data processing
     * Test code for checking validity
-* Link to the required database tables with data [here](https://drive.google.com/file/d/1oeCrZSWLq-JIlVoEXwUlQKJDzzyFk1oK/view?usp=sharing)
+* Link to the required database tables with data [here](https://zenodo.org/records/10950743)
 * CSV, Json, and PNG files of the data and/or results for the five analyzed tags
     * The details are described in the wiki [here](https://github.com/ualberta-smr/SOCommentEditsMapping/wiki/Data-directory) and in the `doc` directory [here](https://github.com/ualberta-smr/SOCommentEditsMapping/blob/master/doc)
 * Instructions for the dependencies and running the scripts are in this README
@@ -39,7 +39,7 @@ We used existing scripts from the [sotorrent-sqlite3 GitHub repo](https://github
 
 * `main.py` is what is used to create an sqlite database called *sotorrent.sqlite3* and populate it with the data in the SOTorrent dump. Note that this process takes ~2 days.
 
-If you do not want to create the SQLite database yourself then we provide a link to download the tables necessary for the program to run (with data) [here](https://drive.google.com/file/d/1oeCrZSWLq-JIlVoEXwUlQKJDzzyFk1oK/view?usp=sharing).
+If you do not want to create the SQLite database yourself then we provide a link to download the tables necessary for the program to run (with data) [here](https://zenodo.org/records/10950743).
 
 The program requires the following Python libraries:
 * [Pandas](https://pandas.pydata.org/) v0.24.2
